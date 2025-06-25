@@ -20,6 +20,14 @@ namespace mygame
 			);
 		}
 
+		public Vector2 GetRandomInsideBounds(float size)
+		{
+			return new Vector2(
+				Random.Range(_bounds.x + size, _bounds.z - size),
+				Random.Range(_bounds.y + size, _bounds.w - size)
+			);
+		}
+
 		public Vector4 Bounds => _bounds;
 	}
 }

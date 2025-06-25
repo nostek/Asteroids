@@ -74,8 +74,11 @@ namespace mygame
 
 		void Start()
 		{
-			for (int i = 0; i < 400; i++)
-				_poolAsteroidsBig.Spawn(Random.insideUnitCircle * 5, Random.insideUnitCircle.normalized * Random.Range(1f, 3f));
+			for (int i = 0; i < 100; i++)
+				_poolAsteroidsBig.Spawn(
+					_worldBoundsManager.GetRandomInsideBounds(1f),
+					Random.insideUnitCircle.normalized * Random.Range(1f, 3f) //Random direction and a random speed from 1- to 3 units per second
+				);
 		}
 
 		void Update()
