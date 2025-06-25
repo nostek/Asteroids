@@ -1,0 +1,231 @@
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Jobs;
+using Unity.Mathematics;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Jobs;
+
+public class PooledObjectManager : MonoBehaviour
+{
+	struct ObjectData
+	{
+		public bool active;
+		public float2 directionWithSpeed;
+	}
+
+	[SerializeField] GameObject _prefabObject;
+
+	Transform[] _pooledObjects;
+	NativeArray<ObjectData> _objectDataArray;
+	NativeArray<float2> _objectPositionsArray;
+	TransformAccessArray _transformAccessArray;
+
+	Transform _parent;
+
+	Vector4 _bounds;
+	float _objectScale = 1f;
+
+	void Awake()
+	{
+		Assert.IsNotNull(_prefabObject, "Prefab object is not assigned. Please assign a prefab in the inspector.");
+
+		_objectScale = _prefabObject.transform.localScale.x * 0.5f; // Half the size and assuming uniform scale
+
+		_parent = new GameObject($"Pool {_prefabObject.name}").transform;
+
+		EnsureCapacity(20);
+	}
+
+	void OnDestroy()
+	{
+		if (_objectDataArray.IsCreated)
+			_objectDataArray.Dispose();
+		if (_objectPositionsArray.IsCreated)
+			_objectPositionsArray.Dispose();
+		if (_transformAccessArray.isCreated)
+			_transformAccessArray.Dispose();
+
+		if (_parent != null)
+			Destroy(_parent.gameObject);
+	}
+
+	void Start()
+	{
+		var camera = Camera.main;
+		Assert.IsNotNull(camera, "Main camera not found. Please ensure a camera is present in the scene.");
+
+		_bounds = new Vector4(
+			-camera.orthographicSize * camera.aspect,
+			-camera.orthographicSize,
+			camera.orthographicSize * camera.aspect,
+			camera.orthographicSize
+		);
+	}
+
+	public void Spawn(Vector2 position, Vector2 directionWithSpeed)
+	{
+		int index = GetFreeIndex();
+
+		_objectDataArray[index] = new ObjectData
+		{
+			active = true,
+			directionWithSpeed = directionWithSpeed
+		};
+
+		_objectPositionsArray[index] = position;
+
+		var pooledObject = _pooledObjects[index];
+		pooledObject.SetLocalPositionAndRotation(position, Quaternion.LookRotation(Vector3.forward, directionWithSpeed));
+		pooledObject.gameObject.SetActive(true);
+	}
+
+	public void Despawn(GameObject pooledObject)
+	{
+		var index = System.Array.IndexOf(_pooledObjects, pooledObject);
+		Assert.IsTrue(index >= 0, "Pooled object not found in the pool.");
+
+		Despawn(index);
+	}
+
+	public void Despawn(int index)
+	{
+		Assert.IsTrue(index >= 0 && index < _pooledObjects.Length, "Index out of bounds for pooled objects.");
+
+		_objectDataArray[index] = new ObjectData { active = false };
+		_pooledObjects[index].gameObject.SetActive(false);
+	}
+
+	int GetFreeIndex()
+	{
+		for (int i = 0; i < _objectDataArray.Length; i++)
+			if (!_objectDataArray[i].active)
+				return i;
+
+		EnsureCapacity(_objectDataArray.Length * 2); // Double the capacity if no free index found
+		return GetFreeIndex();
+	}
+
+	void EnsureCapacity(int capacity)
+	{
+		if (_objectDataArray.IsCreated && _objectDataArray.Length >= capacity)
+			return;
+
+		//TODO: Rescale the existing arrays if needed
+
+		_objectDataArray = new NativeArray<ObjectData>(capacity, Allocator.Persistent);
+		_objectPositionsArray = new NativeArray<float2>(capacity, Allocator.Persistent);
+
+		_pooledObjects = new Transform[capacity];
+		for (int i = 0; i < capacity; i++)
+		{
+			var go = Instantiate(_prefabObject, _parent);
+			go.SetActive(false);
+			_pooledObjects[i] = go.transform;
+		}
+
+		if (_transformAccessArray.isCreated)
+			_transformAccessArray.Dispose();
+		_transformAccessArray = new TransformAccessArray(_pooledObjects);
+	}
+
+	public JobHandle ScheduleUpdate()
+	{
+		return new UpdateJob
+		{
+			data = _objectDataArray,
+			positions = _objectPositionsArray,
+			deltaTime = Time.deltaTime,
+			bounds = _bounds,
+			scale = _objectScale
+		}.Schedule(_transformAccessArray);
+	}
+
+	[BurstCompile]
+	struct UpdateJob : IJobParallelForTransform
+	{
+		[ReadOnly] public NativeArray<ObjectData> data;
+		public NativeArray<float2> positions;
+
+		public float deltaTime;
+		public float4 bounds;
+		public float scale;
+
+		[BurstCompile]
+		public void Execute(int index, TransformAccess transform)
+		{
+			//if (!data[index].active)
+			//	return;
+
+			var pos = positions[index];
+
+			pos += data[index].directionWithSpeed * deltaTime;
+
+			if (pos.x + scale < bounds.x || pos.x - scale > bounds.z)
+				pos.x *= -1f;
+
+			if (pos.y + scale < bounds.y || pos.y - scale > bounds.w)
+				pos.y *= -1f;
+
+			positions[index] = pos;
+
+			transform.localPosition = new float3(pos.xy, 0f);
+		}
+	}
+
+	public JobHandle ScheduleCollisionsVs(PooledObjectManager other, out NativeArray<int> collisions)
+	{
+		collisions = new NativeArray<int>(_objectDataArray.Length, Allocator.TempJob, NativeArrayOptions.ClearMemory);
+
+		return new CollisionsJob()
+		{
+			a_data = _objectDataArray,
+			a_positions = _objectPositionsArray,
+
+			b_data = other._objectDataArray,
+			b_positions = other._objectPositionsArray,
+			length = other._objectDataArray.Length,
+
+			colliderDistance = (_objectScale + other._objectScale) * (_objectScale + other._objectScale),
+			collisions = collisions,
+			ignoreSameIndex = this == other // Avoid self-collision if comparing with itself
+		}.Schedule(_objectDataArray.Length, 32);
+	}
+
+	[BurstCompile]
+	struct CollisionsJob : IJobParallelFor
+	{
+		[ReadOnly] public NativeArray<ObjectData> a_data;
+		[ReadOnly] public NativeArray<float2> a_positions;
+
+		[ReadOnly] public NativeArray<ObjectData> b_data;
+		[ReadOnly] public NativeArray<float2> b_positions;
+		public int length;
+
+		public float colliderDistance;
+		public NativeArray<int> collisions;
+		public bool ignoreSameIndex;
+
+		[BurstCompile]
+		public void Execute(int index)
+		{
+			if (!a_data[index].active)
+				return;
+
+			var a_pos = a_positions[index];
+
+			for (int i = 0; i < length; i++)
+			{
+				if (ignoreSameIndex && i == index)
+					continue;   //skip self-collision
+				if (!b_data[i].active)
+					continue;
+
+				if (math.distancesq(a_pos, b_positions[i]) < colliderDistance)
+				{
+					collisions[index] = i + 1; // Store the index+1 of the collision. +1 to differentiate from no collision (0)
+				}
+			}
+		}
+	}
+}
