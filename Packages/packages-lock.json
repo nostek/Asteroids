@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.github.nostek.unityeventscenter": {
+      "version": "https://github.com/nostek/UnityEventsCenter.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "546c64ff9d91289cb6565b6814769c3f29441608"
+    },
     "com.github.nostek.unityservicelocator": {
       "version": "https://github.com/nostek/UnityServiceLocator.git",
       "depth": 0,

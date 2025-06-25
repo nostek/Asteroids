@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.github.nostek.unityeventscenter": "https://github.com/nostek/UnityEventsCenter.git",
     "com.github.nostek.unityservicelocator": "https://github.com/nostek/UnityServiceLocator.git",
     "com.unity.2d.animation": "11.0.0",
     "com.unity.2d.aseprite": "1.2.5",
