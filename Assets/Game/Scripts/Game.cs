@@ -14,9 +14,9 @@ namespace mygame
 		[SerializeField] GameObject _prefabAsteroidMedium;
 		[SerializeField] GameObject _prefabAsteroidSmall;
 
-		PooledObjectManager _poolAsteroidsBig;
-		PooledObjectManager _poolAsteroidsMedium;
-		PooledObjectManager _poolAsteroidsSmall;
+		EntityPool _poolAsteroidsBig;
+		EntityPool _poolAsteroidsMedium;
+		EntityPool _poolAsteroidsSmall;
 
 		JobHandle _jobCollisionsBigVsBig;
 		JobHandle _jobCollisionsMediumVsMedium;
@@ -46,9 +46,9 @@ namespace mygame
 			Assert.IsNotNull(_prefabAsteroidMedium, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 			Assert.IsNotNull(_prefabAsteroidSmall, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 
-			_poolAsteroidsBig = new PooledObjectManager(_prefabAsteroidBig);
-			_poolAsteroidsMedium = new PooledObjectManager(_prefabAsteroidMedium);
-			_poolAsteroidsSmall = new PooledObjectManager(_prefabAsteroidSmall);
+			_poolAsteroidsBig = new EntityPool(_prefabAsteroidBig);
+			_poolAsteroidsMedium = new EntityPool(_prefabAsteroidMedium);
+			_poolAsteroidsSmall = new EntityPool(_prefabAsteroidSmall);
 		}
 
 		void OnDestroy()
@@ -114,7 +114,7 @@ namespace mygame
 			_jobCollisionsSmallVsBig = _poolAsteroidsSmall.ScheduleCollisionsVs(_poolAsteroidsBig, out _smallVsBigCollisions);
 		}
 
-		void IterateOverAndDispose(NativeArray<int> collisions, PooledObjectManager pool, System.Action<Vector2, Vector2> onCollision)
+		void IterateOverAndDispose(NativeArray<int> collisions, EntityPool pool, System.Action<Vector2, Vector2> onCollision)
 		{
 			if (!collisions.IsCreated)
 				return;
@@ -136,7 +136,7 @@ namespace mygame
 			collisions.Dispose();
 		}
 
-		void IterateOverAndDispose(NativeArray<int> collisions, PooledObjectManager poolA, System.Action<Vector2, Vector2> onCollisionA, PooledObjectManager poolB, System.Action<Vector2, Vector2> onCollisionB)
+		void IterateOverAndDispose(NativeArray<int> collisions, EntityPool poolA, System.Action<Vector2, Vector2> onCollisionA, EntityPool poolB, System.Action<Vector2, Vector2> onCollisionB)
 		{
 			if (!collisions.IsCreated)
 				return;

@@ -8,7 +8,7 @@ using UnityEngine.Jobs;
 
 namespace mygame
 {
-	public class PooledObjectManager : System.IDisposable
+	public class EntityPool : System.IDisposable
 	{
 		struct ObjectData
 		{
@@ -26,7 +26,7 @@ namespace mygame
 
 		Transform _parent;
 
-		public PooledObjectManager(GameObject prefab)
+		public EntityPool(GameObject prefab)
 		{
 			Assert.IsNotNull(prefab, "Prefab object is not supplied");
 			_prefabObject = prefab;
@@ -173,7 +173,7 @@ namespace mygame
 
 		#region SCHEDULE COLLISIONS
 
-		public JobHandle ScheduleCollisionsVs(PooledObjectManager other, out NativeArray<int> collisions)
+		public JobHandle ScheduleCollisionsVs(EntityPool other, out NativeArray<int> collisions)
 		{
 			collisions = new NativeArray<int>(_objectDataArray.Length, Allocator.TempJob, NativeArrayOptions.ClearMemory);
 
