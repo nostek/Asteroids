@@ -46,8 +46,8 @@ namespace mygame
 
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidBig, OnBigAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid, _prefabAsteroidBig, OnBigAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid, _prefabAsteroidBig, OnBigAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop, _prefabAsteroidMedium, OnMediumAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop, _prefabAsteroidBig, OnBigAsteroid);
 
