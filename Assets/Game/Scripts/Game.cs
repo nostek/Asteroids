@@ -6,17 +6,13 @@ using UnityServiceLocator;
 
 namespace mygame
 {
-	[DefaultExecutionOrder(-1)]
+	[DefaultExecutionOrder(-1)] //We want the setup to run before any other scripts
 	public class Game : MonoBehaviour
 	{
 		[Header("Prefabs Asteroids")]
 		[SerializeField] GameObject _prefabAsteroidBig;
 		[SerializeField] GameObject _prefabAsteroidMedium;
 		[SerializeField] GameObject _prefabAsteroidSmall;
-
-		EntityPool _poolAsteroidsBig;
-		EntityPool _poolAsteroidsMedium;
-		EntityPool _poolAsteroidsSmall;
 
 		JobHandle _jobCollisionsBigVsBig;
 		JobHandle _jobCollisionsMediumVsMedium;
@@ -33,6 +29,7 @@ namespace mygame
 		NativeArray<int> _smallVsBigCollisions;
 
 		WorldBoundsManager _worldBoundsManager;
+		EntitiesManager _entitiesManager;
 
 		void Awake()
 		{
@@ -40,15 +37,12 @@ namespace mygame
 
 			ServiceLocator.Lookup
 				.Get(out _worldBoundsManager)
+				.Get(out _entitiesManager)
 				.Done();
 
 			Assert.IsNotNull(_prefabAsteroidBig, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 			Assert.IsNotNull(_prefabAsteroidMedium, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 			Assert.IsNotNull(_prefabAsteroidSmall, "Prefab object is not assigned. Please assign a prefab in the inspector.");
-
-			_poolAsteroidsBig = new EntityPool(_prefabAsteroidBig);
-			_poolAsteroidsMedium = new EntityPool(_prefabAsteroidMedium);
-			_poolAsteroidsSmall = new EntityPool(_prefabAsteroidSmall);
 		}
 
 		void OnDestroy()
@@ -66,16 +60,17 @@ namespace mygame
 			if (_smallVsSmallCollisions.IsCreated) _smallVsSmallCollisions.Dispose();
 			if (_smallVsMediumCollisions.IsCreated) _smallVsMediumCollisions.Dispose();
 			if (_smallVsBigCollisions.IsCreated) _smallVsBigCollisions.Dispose();
-
-			_poolAsteroidsBig?.Dispose();
-			_poolAsteroidsMedium?.Dispose();
-			_poolAsteroidsSmall?.Dispose();
 		}
 
 		void Start()
 		{
-			for (int i = 0; i < 100; i++)
-				_poolAsteroidsBig.Spawn(
+			_entitiesManager.RegisterEntity(_prefabAsteroidBig);
+			_entitiesManager.RegisterEntity(_prefabAsteroidMedium);
+			_entitiesManager.RegisterEntity(_prefabAsteroidSmall);
+
+			for (int i = 0; i < 200; i++)
+				_entitiesManager.Spawn(
+					_prefabAsteroidBig,
 					_worldBoundsManager.GetRandomInsideBounds(1f),
 					Random.insideUnitCircle.normalized * Random.Range(1f, 3f) //Random direction and a random speed from 1- to 3 units per second
 				);
@@ -83,6 +78,7 @@ namespace mygame
 
 		void Update()
 		{
+			/*
 			_jobCollisionsBigVsBig.Complete();
 			_jobCollisionsMediumVsMedium.Complete();
 			_jobCollisionsMediumVsBig.Complete();
@@ -101,14 +97,6 @@ namespace mygame
 			_poolAsteroidsMedium.FlushFreeIndices();
 			_poolAsteroidsSmall.FlushFreeIndices();
 
-			//We want these jobs to run in parallel, so we schedule them and complete them in the correct order.
-			var jobBig = _poolAsteroidsBig.ScheduleUpdate(_worldBoundsManager.Bounds);
-			var jobMedium = _poolAsteroidsMedium.ScheduleUpdate(_worldBoundsManager.Bounds);
-			var jobSmall = _poolAsteroidsSmall.ScheduleUpdate(_worldBoundsManager.Bounds);
-			jobBig.Complete();
-			jobMedium.Complete();
-			jobSmall.Complete();
-
 			//Schedule the collision jobs, but do not complete them until the next frame.
 			_jobCollisionsBigVsBig = _poolAsteroidsBig.ScheduleCollisionsVs(_poolAsteroidsBig, out _bigVsBigCollisions);
 			_jobCollisionsMediumVsMedium = _poolAsteroidsMedium.ScheduleCollisionsVs(_poolAsteroidsMedium, out _mediumVsMediumCollisions);
@@ -116,6 +104,7 @@ namespace mygame
 			_jobCollisionsSmallVsSmall = _poolAsteroidsSmall.ScheduleCollisionsVs(_poolAsteroidsSmall, out _smallVsSmallCollisions);
 			_jobCollisionsSmallVsMedium = _poolAsteroidsSmall.ScheduleCollisionsVs(_poolAsteroidsMedium, out _smallVsMediumCollisions);
 			_jobCollisionsSmallVsBig = _poolAsteroidsSmall.ScheduleCollisionsVs(_poolAsteroidsBig, out _smallVsBigCollisions);
+			*/
 		}
 
 		void IterateOverAndDispose(NativeArray<int> collisions, EntityPool pool, System.Action<Vector2, Vector2> onCollision)
@@ -131,8 +120,7 @@ namespace mygame
 					var posA = pool.GetPositionAtIndex(i);
 					var posB = pool.GetPositionAtIndex(otherIndex);
 
-					if (pool != _poolAsteroidsSmall)
-						pool.Despawn(i);
+					pool.Despawn(i);
 					pool.Despawn(otherIndex);
 
 					onCollision(posA, posB);
@@ -154,8 +142,7 @@ namespace mygame
 					var posA = poolA.GetPositionAtIndex(i);
 					var posB = poolB.GetPositionAtIndex(otherIndex);
 
-					if (poolA != _poolAsteroidsSmall)
-						poolA.Despawn(i);
+					poolA.Despawn(i);
 					poolB.Despawn(otherIndex);
 
 					onCollisionA(posA, posB);
@@ -168,13 +155,13 @@ namespace mygame
 		void OnBigAsteroid(Vector2 position, Vector2 otherPosition)
 		{
 			var dir = (position - otherPosition).normalized;
-			_poolAsteroidsMedium.Spawn(position, dir * Random.Range(1f, 3f));
+			// _poolAsteroidsMedium.Spawn(position, dir * Random.Range(1f, 3f));
 		}
 
 		void OnMediumAsteroid(Vector2 position, Vector2 otherPosition)
 		{
 			var dir = (position - otherPosition).normalized;
-			_poolAsteroidsSmall.Spawn(position, dir * Random.Range(1f, 3f));
+			// _poolAsteroidsSmall.Spawn(position, dir * Random.Range(1f, 3f));
 		}
 
 		void OnNoop(Vector2 position, Vector2 otherPosition)
