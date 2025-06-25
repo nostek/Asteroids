@@ -114,7 +114,7 @@ namespace mygame
 			_jobCollisionsSmallVsBig = _poolAsteroidsSmall.ScheduleCollisionsVs(_poolAsteroidsBig, out _smallVsBigCollisions);
 		}
 
-		void IterateOverAndDispose(NativeArray<int> collisions, PooledObjectManager pool, System.Action<Vector2> onCollision)
+		void IterateOverAndDispose(NativeArray<int> collisions, PooledObjectManager pool, System.Action<Vector2, Vector2> onCollision)
 		{
 			if (!collisions.IsCreated)
 				return;
@@ -122,18 +122,21 @@ namespace mygame
 			for (int i = 0; i < collisions.Length; i++)
 				if (collisions[i] > 0)
 				{
-					var pos = pool.GetPositionAtIndex(i);
+					var otherIndex = collisions[i] - 1; // Convert to 0-based index
+
+					var posA = pool.GetPositionAtIndex(i);
+					var posB = pool.GetPositionAtIndex(otherIndex);
 
 					if (pool != _poolAsteroidsSmall)
 						pool.Despawn(i);
 
-					onCollision(pos);
+					onCollision(posA, posB);
 				}
 
 			collisions.Dispose();
 		}
 
-		void IterateOverAndDispose(NativeArray<int> collisions, PooledObjectManager poolA, System.Action<Vector2> onCollisionA, PooledObjectManager poolB, System.Action<Vector2> onCollisionB)
+		void IterateOverAndDispose(NativeArray<int> collisions, PooledObjectManager poolA, System.Action<Vector2, Vector2> onCollisionA, PooledObjectManager poolB, System.Action<Vector2, Vector2> onCollisionB)
 		{
 			if (!collisions.IsCreated)
 				return;
@@ -150,24 +153,26 @@ namespace mygame
 						poolA.Despawn(i);
 					poolB.Despawn(otherIndex);
 
-					onCollisionA(posA);
-					onCollisionB(posB);
+					onCollisionA(posA, posB);
+					onCollisionB(posB, posA);
 				}
 
 			collisions.Dispose();
 		}
 
-		void OnBigAsteroid(Vector2 position)
+		void OnBigAsteroid(Vector2 position, Vector2 otherPosition)
 		{
-			_poolAsteroidsMedium.Spawn(position, Random.insideUnitCircle.normalized * Random.Range(1f, 3f));
+			var dir = (position - otherPosition).normalized;
+			_poolAsteroidsMedium.Spawn(position, dir * Random.Range(1f, 3f));
 		}
 
-		void OnMediumAsteroid(Vector2 position)
+		void OnMediumAsteroid(Vector2 position, Vector2 otherPosition)
 		{
-			_poolAsteroidsSmall.Spawn(position, Random.insideUnitCircle.normalized * Random.Range(1f, 3f));
+			var dir = (position - otherPosition).normalized;
+			_poolAsteroidsSmall.Spawn(position, dir * Random.Range(1f, 3f));
 		}
 
-		void OnNoop(Vector2 position)
+		void OnNoop(Vector2 position, Vector2 otherPosition)
 		{
 		}
 	}
