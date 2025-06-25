@@ -24,7 +24,7 @@ namespace mygame
 
 		Transform _parent;
 
-		public EntityPool(GameObject prefab)
+		public EntityPool(GameObject prefab, int ensureCapacity)
 		{
 			Assert.IsNotNull(prefab, "Prefab object is not supplied");
 			_prefabObject = prefab;
@@ -33,7 +33,7 @@ namespace mygame
 
 			_parent = new GameObject($"Pool {prefab.name}").transform;
 
-			EnsureCapacity(500);
+			EnsureCapacity(ensureCapacity);
 		}
 
 		public void Dispose()

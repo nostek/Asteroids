@@ -55,11 +55,11 @@ namespace mygame
 				data.Pool.Dispose();
 		}
 
-		public void RegisterEntity(GameObject prefab)
+		public void RegisterEntity(GameObject prefab, int ensureCapacity = 50)
 		{
 			Assert.IsFalse(_entityPools.ContainsKey(prefab), "Entity prefab is already registered: " + prefab.name);
 
-			_entityPools.Add(prefab, new EntityData() { Pool = new EntityPool(prefab) });
+			_entityPools.Add(prefab, new EntityData() { Pool = new EntityPool(prefab, ensureCapacity) });
 		}
 
 		public void RegisterCollisionSolver(GameObject prefab, CollisionSolverDelegate solver)
