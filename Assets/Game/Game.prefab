@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2571469474966838299}
+  - component: {fileID: -2942967614389755130}
   - component: {fileID: 1615025345976642594}
+  - component: {fileID: -8281545801764551450}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -32,6 +34,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2942967614389755130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4333398850841293924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c43e45ac1f2ebb42aeea0a24f063797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  installOnAwake: 0
+  installOnStart: 0
+  classes: []
+  monoBehaviours:
+  - {fileID: -8281545801764551450}
+  scriptableObjects: []
 --- !u!114 &1615025345976642594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,3 +67,15 @@ MonoBehaviour:
   _prefabAsteroidBig: {fileID: 2743347620663388294, guid: 67cf1ed60077ebc4dac91b5128bd377a, type: 3}
   _prefabAsteroidMedium: {fileID: 2743347620663388294, guid: c2982054019258f479078b338c2ff5fc, type: 3}
   _prefabAsteroidSmall: {fileID: 2743347620663388294, guid: 38a5ec998d68ab04aa3a98e8b00cfed1, type: 3}
+--- !u!114 &-8281545801764551450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4333398850841293924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d33589f576b857b429899aaa25c51478, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

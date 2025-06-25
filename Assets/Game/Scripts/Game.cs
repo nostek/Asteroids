@@ -2,9 +2,11 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityServiceLocator;
 
 namespace mygame
 {
+	[DefaultExecutionOrder(-1)]
 	public class Game : MonoBehaviour
 	{
 		[Header("Prefabs Asteroids")]
@@ -30,8 +32,16 @@ namespace mygame
 		NativeArray<int> _smallVsMediumCollisions;
 		NativeArray<int> _smallVsBigCollisions;
 
+		WorldBoundsManager _worldBoundsManager;
+
 		void Awake()
 		{
+			GetComponent<ServiceBehaviour>().Install();
+
+			ServiceLocator.Lookup
+				.Get(out _worldBoundsManager)
+				.Done();
+
 			Assert.IsNotNull(_prefabAsteroidBig, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 			Assert.IsNotNull(_prefabAsteroidMedium, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 			Assert.IsNotNull(_prefabAsteroidSmall, "Prefab object is not assigned. Please assign a prefab in the inspector.");
