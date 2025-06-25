@@ -26,8 +26,6 @@ namespace mygame
 
 		Transform _parent;
 
-		Vector4 _bounds;
-
 		public PooledObjectManager(GameObject prefab)
 		{
 			Assert.IsNotNull(prefab, "Prefab object is not supplied");
@@ -35,17 +33,6 @@ namespace mygame
 			_objectScale = prefab.transform.localScale.x * 0.5f; // Half the size and assuming uniform scale
 
 			_parent = new GameObject($"Pool {prefab.name}").transform;
-
-			//TODO: Make a Worlds Bounds Manager
-			var camera = Camera.main;
-			Assert.IsNotNull(camera, "Main camera not found. Please ensure a camera is present in the scene.");
-
-			_bounds = new Vector4(
-				-camera.orthographicSize * camera.aspect,
-				-camera.orthographicSize,
-				camera.orthographicSize * camera.aspect,
-				camera.orthographicSize
-			);
 
 			EnsureCapacity(500);
 		}
@@ -138,14 +125,14 @@ namespace mygame
 
 		#region SCHEDULE UPDATE
 
-		public JobHandle ScheduleUpdate()
+		public JobHandle ScheduleUpdate(Vector4 bounds)
 		{
 			return new UpdateJob
 			{
 				data = _objectDataArray,
 				positions = _objectPositionsArray,
 				deltaTime = Time.deltaTime,
-				bounds = _bounds,
+				bounds = bounds,
 				scale = _objectScale
 			}.Schedule(_transformAccessArray);
 		}

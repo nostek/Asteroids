@@ -95,9 +95,9 @@ namespace mygame
 			IterateOverAndDispose(_smallVsBigCollisions, _poolAsteroidsSmall, OnNoop, _poolAsteroidsBig, OnBigAsteroid);
 
 			//We want these jobs to run in parallel, so we schedule them and complete them in the correct order.
-			var jobBig = _poolAsteroidsBig.ScheduleUpdate();
-			var jobMedium = _poolAsteroidsMedium.ScheduleUpdate();
-			var jobSmall = _poolAsteroidsSmall.ScheduleUpdate();
+			var jobBig = _poolAsteroidsBig.ScheduleUpdate(_worldBoundsManager.Bounds);
+			var jobMedium = _poolAsteroidsMedium.ScheduleUpdate(_worldBoundsManager.Bounds);
+			var jobSmall = _poolAsteroidsSmall.ScheduleUpdate(_worldBoundsManager.Bounds);
 			jobBig.Complete();
 			jobMedium.Complete();
 			jobSmall.Complete();
