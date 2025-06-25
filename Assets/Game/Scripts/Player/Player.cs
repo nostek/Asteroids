@@ -12,18 +12,12 @@ namespace mygame
 		[SerializeField] float _breakSpeed = 1f;
 		[SerializeField] GameObject _prefabMissile;
 
-		PlayerShipInput _input;
-
 		Transform _transform;
+		PlayerInput _input;
 
 		EntitiesManager _entitiesManager;
 
-		float _rotateDirection = 0f;
 		float _moveSpeed = 0f;
-
-		bool _isThrusting = false;
-		bool _isBreaking = false;
-		bool _shouldFire = false;
 
 		void Awake()
 		{
@@ -31,36 +25,12 @@ namespace mygame
 
 			_transform = GetComponent<Transform>();
 
+			_input = GetComponent<PlayerInput>();
+			Assert.IsNotNull(_input, "PlayerInput could not be found.");
+
 			ServiceLocator.Lookup
 				.Get(out _entitiesManager)
 				.Done();
-
-			_input = new PlayerShipInput();
-			_input.Movement.Rotate.performed += ctx => _rotateDirection = ctx.ReadValue<float>();
-			_input.Movement.Rotate.canceled += ctx => _rotateDirection = 0f;
-
-			_input.Movement.Thrust.performed += ctx => _isThrusting = true;
-			_input.Movement.Thrust.canceled += ctx => _isThrusting = false;
-
-			_input.Movement.Brake.performed += ctx => _isBreaking = true;
-			_input.Movement.Brake.canceled += ctx => _isBreaking = false;
-
-			_input.Actions.Fire.performed += ctx => _shouldFire = true;
-		}
-
-		void OnEnable()
-		{
-			_input.Enable();
-		}
-
-		void OnDisable()
-		{
-			_input.Disable();
-		}
-
-		void OnDestroy()
-		{
-			_input.Dispose();
 		}
 
 		void Update()
@@ -70,23 +40,20 @@ namespace mygame
 			_transform.GetLocalPositionAndRotation(out var pos, out var rot);
 			var fwd = _transform.up;
 
-			if (_shouldFire)
-			{
-				_shouldFire = false;
+			if (_input.UseShouldFire())
 				_entitiesManager.Spawn(_prefabMissile, pos, fwd * 10f);
-			}
 
-			if (_isThrusting)
+			if (_input.IsThrusting)
 			{
 				_moveSpeed = Mathf.Min(_maxSpeed, _moveSpeed + _thrustSpeed * dt);
 			}
-			else if (_isBreaking)
+			else if (_input.IsBreaking)
 			{
 				_moveSpeed = Mathf.Max(0f, _moveSpeed - _breakSpeed * dt);
 			}
 
 			pos += _moveSpeed * dt * fwd;
-			rot *= Quaternion.Euler(0f, 0f, _rotateDirection * _rotationSpeed * dt * -1f);
+			rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _rotationSpeed * dt * -1f);
 
 			_transform.SetLocalPositionAndRotation(pos, rot);
 		}
