@@ -34,17 +34,14 @@ public class PooledObjectManager : MonoBehaviour
 
 		_parent = new GameObject($"Pool {_prefabObject.name}").transform;
 
-		EnsureCapacity(20);
+		EnsureCapacity(500);
 	}
 
 	void OnDestroy()
 	{
-		if (_objectDataArray.IsCreated)
-			_objectDataArray.Dispose();
-		if (_objectPositionsArray.IsCreated)
-			_objectPositionsArray.Dispose();
-		if (_transformAccessArray.isCreated)
-			_transformAccessArray.Dispose();
+		if (_objectDataArray.IsCreated) _objectDataArray.Dispose();
+		if (_objectPositionsArray.IsCreated) _objectPositionsArray.Dispose();
+		if (_transformAccessArray.isCreated) _transformAccessArray.Dispose();
 
 		if (_parent != null)
 			Destroy(_parent.gameObject);
@@ -91,9 +88,16 @@ public class PooledObjectManager : MonoBehaviour
 	public void Despawn(int index)
 	{
 		Assert.IsTrue(index >= 0 && index < _pooledObjects.Length, "Index out of bounds for pooled objects.");
+		Assert.IsTrue(_objectDataArray[index].active, "Index is not active in the pool.");
 
 		_objectDataArray[index] = new ObjectData { active = false };
 		_pooledObjects[index].gameObject.SetActive(false);
+	}
+
+	public Vector2 GetPositionAtIndex(int index)
+	{
+		Assert.IsTrue(index >= 0 && index < _objectPositionsArray.Length, "Index out of bounds for object positions.");
+		return _objectPositionsArray[index];
 	}
 
 	int GetFreeIndex()
@@ -154,8 +158,8 @@ public class PooledObjectManager : MonoBehaviour
 		[BurstCompile]
 		public void Execute(int index, TransformAccess transform)
 		{
-			//if (!data[index].active)
-			//	return;
+			if (!data[index].active)
+				return;
 
 			var pos = positions[index];
 
@@ -184,7 +188,6 @@ public class PooledObjectManager : MonoBehaviour
 
 			b_data = other._objectDataArray,
 			b_positions = other._objectPositionsArray,
-			length = other._objectDataArray.Length,
 
 			colliderDistance = (_objectScale + other._objectScale) * (_objectScale + other._objectScale),
 			collisions = collisions,
@@ -200,7 +203,6 @@ public class PooledObjectManager : MonoBehaviour
 
 		[ReadOnly] public NativeArray<ObjectData> b_data;
 		[ReadOnly] public NativeArray<float2> b_positions;
-		public int length;
 
 		public float colliderDistance;
 		public NativeArray<int> collisions;
@@ -214,10 +216,11 @@ public class PooledObjectManager : MonoBehaviour
 
 			var a_pos = a_positions[index];
 
-			for (int i = 0; i < length; i++)
+			for (int i = 0; i < b_data.Length; i++)
 			{
 				if (ignoreSameIndex && i == index)
 					continue;   //skip self-collision
+
 				if (!b_data[i].active)
 					continue;
 
