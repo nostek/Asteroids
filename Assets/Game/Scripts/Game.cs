@@ -14,6 +14,7 @@ namespace mygame
 
 		[Header("Prefabs Player")]
 		[SerializeField] GameObject _prefabPlayer;
+		[SerializeField] GameObject _prefabMissile;
 
 		WorldBoundsManager _worldBoundsManager;
 		EntitiesManager _entitiesManager;
@@ -31,6 +32,7 @@ namespace mygame
 			Assert.IsNotNull(_prefabAsteroidMedium, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 			Assert.IsNotNull(_prefabAsteroidSmall, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 			Assert.IsNotNull(_prefabPlayer, "Prefab object is not assigned. Please assign a prefab in the inspector.");
+			Assert.IsNotNull(_prefabMissile, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 		}
 
 		void Start()
@@ -38,6 +40,7 @@ namespace mygame
 			_entitiesManager.RegisterEntity(_prefabAsteroidBig);
 			_entitiesManager.RegisterEntity(_prefabAsteroidMedium);
 			_entitiesManager.RegisterEntity(_prefabAsteroidSmall);
+			_entitiesManager.RegisterEntity(_prefabMissile);
 
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidBig, OnBigAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid);
@@ -45,6 +48,10 @@ namespace mygame
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop, _prefabAsteroidMedium, OnMediumAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop, _prefabAsteroidBig, OnBigAsteroid);
+
+			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnNoop, _prefabAsteroidBig, OnBigAsteroid);
+			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnNoop, _prefabAsteroidMedium, OnMediumAsteroid);
+			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnNoop, _prefabAsteroidSmall, OnNoop);
 
 			for (int i = 0; i < 10; i++)
 				_entitiesManager.Spawn(

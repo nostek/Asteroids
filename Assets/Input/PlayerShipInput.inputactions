@@ -90,6 +90,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Actions",
+            "id": "abe9f60f-3d31-4eec-83a4-07e3682e3c1d",
+            "actions": [
+                {
+                    "name": "Fire",
+                    "type": "Button",
+                    "id": "4748f1ab-84d3-40da-b849-a7eedae82d1c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "24acfee0-0995-4eae-8b9a-59f5720d0442",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
