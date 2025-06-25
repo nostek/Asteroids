@@ -6,9 +6,13 @@ using UnityEngine.Assertions;
 public class Game : MonoBehaviour
 {
 	[Header("Prefabs Asteroids")]
-	[SerializeField] PooledObjectManager _poolAsteroidsBig;
-	[SerializeField] PooledObjectManager _poolAsteroidsMedium;
-	[SerializeField] PooledObjectManager _poolAsteroidsSmall;
+	[SerializeField] GameObject _prefabAsteroidBig;
+	[SerializeField] GameObject _prefabAsteroidMedium;
+	[SerializeField] GameObject _prefabAsteroidSmall;
+
+	PooledObjectManager _poolAsteroidsBig;
+	PooledObjectManager _poolAsteroidsMedium;
+	PooledObjectManager _poolAsteroidsSmall;
 
 	JobHandle _jobCollisionsBigVsBig;
 	JobHandle _jobCollisionsMediumVsMedium;
@@ -26,19 +30,34 @@ public class Game : MonoBehaviour
 
 	void Awake()
 	{
-		Assert.IsNotNull(_poolAsteroidsBig, "PooledObjectManager for big asteroids is not assigned. Please assign it in the inspector.");
-		Assert.IsNotNull(_poolAsteroidsMedium, "PooledObjectManager for medium asteroids is not assigned. Please assign it in the inspector.");
-		Assert.IsNotNull(_poolAsteroidsSmall, "PooledObjectManager for small asteroids is not assigned. Please assign it in the inspector.");
+		Assert.IsNotNull(_prefabAsteroidBig, "Prefab object is not assigned. Please assign a prefab in the inspector.");
+		Assert.IsNotNull(_prefabAsteroidMedium, "Prefab object is not assigned. Please assign a prefab in the inspector.");
+		Assert.IsNotNull(_prefabAsteroidSmall, "Prefab object is not assigned. Please assign a prefab in the inspector.");
+
+		_poolAsteroidsBig = new PooledObjectManager(_prefabAsteroidBig);
+		_poolAsteroidsMedium = new PooledObjectManager(_prefabAsteroidMedium);
+		_poolAsteroidsSmall = new PooledObjectManager(_prefabAsteroidSmall);
 	}
 
 	void OnDestroy()
 	{
+		_jobCollisionsBigVsBig.Complete();
+		_jobCollisionsMediumVsMedium.Complete();
+		_jobCollisionsMediumVsBig.Complete();
+		_jobCollisionsSmallVsSmall.Complete();
+		_jobCollisionsSmallVsMedium.Complete();
+		_jobCollisionsSmallVsBig.Complete();
+
 		if (_bigVsBigCollisions.IsCreated) _bigVsBigCollisions.Dispose();
 		if (_mediumVsMediumCollisions.IsCreated) _mediumVsMediumCollisions.Dispose();
 		if (_mediumVsBigCollisions.IsCreated) _mediumVsBigCollisions.Dispose();
 		if (_smallVsSmallCollisions.IsCreated) _smallVsSmallCollisions.Dispose();
 		if (_smallVsMediumCollisions.IsCreated) _smallVsMediumCollisions.Dispose();
 		if (_smallVsBigCollisions.IsCreated) _smallVsBigCollisions.Dispose();
+
+		_poolAsteroidsBig?.Dispose();
+		_poolAsteroidsMedium?.Dispose();
+		_poolAsteroidsSmall?.Dispose();
 	}
 
 	void Start()

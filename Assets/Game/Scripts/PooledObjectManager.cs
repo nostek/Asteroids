@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Jobs;
 
-public class PooledObjectManager : MonoBehaviour
+public class PooledObjectManager : System.IDisposable
 {
 	struct ObjectData
 	{
@@ -14,7 +14,8 @@ public class PooledObjectManager : MonoBehaviour
 		public float2 directionWithSpeed;
 	}
 
-	[SerializeField] GameObject _prefabObject;
+	readonly GameObject _prefabObject;
+	readonly float _objectScale = 1f;
 
 	Transform[] _pooledObjects;
 	NativeArray<ObjectData> _objectDataArray;
@@ -24,31 +25,15 @@ public class PooledObjectManager : MonoBehaviour
 	Transform _parent;
 
 	Vector4 _bounds;
-	float _objectScale = 1f;
 
-	void Awake()
+	public PooledObjectManager(GameObject prefab)
 	{
-		Assert.IsNotNull(_prefabObject, "Prefab object is not assigned. Please assign a prefab in the inspector.");
+		Assert.IsNotNull(prefab, "Prefab object is not supplied");
+		_prefabObject = prefab;
+		_objectScale = prefab.transform.localScale.x * 0.5f; // Half the size and assuming uniform scale
 
-		_objectScale = _prefabObject.transform.localScale.x * 0.5f; // Half the size and assuming uniform scale
+		_parent = new GameObject($"Pool {prefab.name}").transform;
 
-		_parent = new GameObject($"Pool {_prefabObject.name}").transform;
-
-		EnsureCapacity(500);
-	}
-
-	void OnDestroy()
-	{
-		if (_objectDataArray.IsCreated) _objectDataArray.Dispose();
-		if (_objectPositionsArray.IsCreated) _objectPositionsArray.Dispose();
-		if (_transformAccessArray.isCreated) _transformAccessArray.Dispose();
-
-		if (_parent != null)
-			Destroy(_parent.gameObject);
-	}
-
-	void Start()
-	{
 		var camera = Camera.main;
 		Assert.IsNotNull(camera, "Main camera not found. Please ensure a camera is present in the scene.");
 
@@ -58,6 +43,21 @@ public class PooledObjectManager : MonoBehaviour
 			camera.orthographicSize * camera.aspect,
 			camera.orthographicSize
 		);
+
+		EnsureCapacity(500);
+	}
+
+	public void Dispose()
+	{
+		if (_objectDataArray.IsCreated) _objectDataArray.Dispose();
+		if (_objectPositionsArray.IsCreated) _objectPositionsArray.Dispose();
+		if (_transformAccessArray.isCreated) _transformAccessArray.Dispose();
+
+		if (_parent != null)
+		{
+			GameObject.Destroy(_parent.gameObject);
+			_parent = null;
+		}
 	}
 
 	public void Spawn(Vector2 position, Vector2 directionWithSpeed)
@@ -123,7 +123,7 @@ public class PooledObjectManager : MonoBehaviour
 		_pooledObjects = new Transform[capacity];
 		for (int i = 0; i < capacity; i++)
 		{
-			var go = Instantiate(_prefabObject, _parent);
+			var go = GameObject.Instantiate(_prefabObject, _parent);
 			go.SetActive(false);
 			_pooledObjects[i] = go.transform;
 		}
