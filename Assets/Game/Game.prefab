@@ -53,7 +53,8 @@ MonoBehaviour:
   monoBehaviours:
   - {fileID: -8281545801764551450}
   - {fileID: 7822247498576877170}
-  scriptableObjects: []
+  scriptableObjects:
+  - {fileID: 11400000, guid: d0b12a20de7d240fab03b18909f5b92a, type: 2}
 --- !u!114 &1615025345976642594
 MonoBehaviour:
   m_ObjectHideFlags: 0

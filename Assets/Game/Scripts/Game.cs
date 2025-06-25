@@ -18,6 +18,7 @@ namespace mygame
 
 		WorldBoundsManager _worldBoundsManager;
 		EntitiesManager _entitiesManager;
+		Tweaktable _tweaktable;
 
 		void Awake()
 		{
@@ -26,6 +27,7 @@ namespace mygame
 			ServiceLocator.Lookup
 				.Get(out _worldBoundsManager)
 				.Get(out _entitiesManager)
+				.Get(out _tweaktable)
 				.Done();
 
 			Assert.IsNotNull(_prefabAsteroidBig, "Prefab object is not assigned. Please assign a prefab in the inspector.");
@@ -57,7 +59,7 @@ namespace mygame
 				_entitiesManager.Spawn(
 					_prefabAsteroidBig,
 					_worldBoundsManager.GetRandomInsideBounds(1f),
-					Random.insideUnitCircle.normalized * Random.Range(1f, 3f) //Random direction and a random speed from 1- to 3 units per second
+					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomSpeedBetween.x, _tweaktable.RandomSpeedBetween.y)
 				);
 
 			// Spawn the player at the center of the world bounds
@@ -67,13 +69,13 @@ namespace mygame
 		void OnBigAsteroid(Vector2 position, Vector2 otherPosition)
 		{
 			var dir = (position - otherPosition).normalized;
-			_entitiesManager.Spawn(_prefabAsteroidMedium, position, dir * Random.Range(1f, 3f));
+			_entitiesManager.Spawn(_prefabAsteroidMedium, position, dir * Random.Range(_tweaktable.RandomSpeedBetween.x, _tweaktable.RandomSpeedBetween.y));
 		}
 
 		void OnMediumAsteroid(Vector2 position, Vector2 otherPosition)
 		{
 			var dir = (position - otherPosition).normalized;
-			_entitiesManager.Spawn(_prefabAsteroidSmall, position, dir * Random.Range(1f, 3f));
+			_entitiesManager.Spawn(_prefabAsteroidSmall, position, dir * Random.Range(_tweaktable.RandomSpeedBetween.x, _tweaktable.RandomSpeedBetween.y));
 		}
 
 		void OnNoop(Vector2 position, Vector2 otherPosition)
