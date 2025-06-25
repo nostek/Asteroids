@@ -69,6 +69,7 @@ MonoBehaviour:
   _prefabAsteroidBig: {fileID: 2743347620663388294, guid: 67cf1ed60077ebc4dac91b5128bd377a, type: 3}
   _prefabAsteroidMedium: {fileID: 2743347620663388294, guid: c2982054019258f479078b338c2ff5fc, type: 3}
   _prefabAsteroidSmall: {fileID: 2743347620663388294, guid: 38a5ec998d68ab04aa3a98e8b00cfed1, type: 3}
+  _prefabPlayer: {fileID: 8750356187181814245, guid: 932b72eb0f12d9544937a77f6f21c2cd, type: 3}
 --- !u!114 &-8281545801764551450
 MonoBehaviour:
   m_ObjectHideFlags: 0

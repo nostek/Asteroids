@@ -12,6 +12,9 @@ namespace mygame
 		[SerializeField] GameObject _prefabAsteroidMedium;
 		[SerializeField] GameObject _prefabAsteroidSmall;
 
+		[Header("Prefabs Player")]
+		[SerializeField] GameObject _prefabPlayer;
+
 		WorldBoundsManager _worldBoundsManager;
 		EntitiesManager _entitiesManager;
 
@@ -27,6 +30,7 @@ namespace mygame
 			Assert.IsNotNull(_prefabAsteroidBig, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 			Assert.IsNotNull(_prefabAsteroidMedium, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 			Assert.IsNotNull(_prefabAsteroidSmall, "Prefab object is not assigned. Please assign a prefab in the inspector.");
+			Assert.IsNotNull(_prefabPlayer, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 		}
 
 		void Start()
@@ -48,6 +52,9 @@ namespace mygame
 					_worldBoundsManager.GetRandomInsideBounds(1f),
 					Random.insideUnitCircle.normalized * Random.Range(1f, 3f) //Random direction and a random speed from 1- to 3 units per second
 				);
+
+			// Spawn the player at the center of the world bounds
+			Instantiate(_prefabPlayer);
 		}
 
 		void OnBigAsteroid(Vector2 position, Vector2 otherPosition)
