@@ -96,7 +96,7 @@ namespace mygame
 
 		void Update()
 		{
-			//Complete the jobs first to ensure all operations are finished before disposing
+			//Complete the jobs first to ensure all operations are finished before iterating over results
 			foreach (var data in _collisionSolvers)
 				data.Job.Complete();
 
@@ -108,6 +108,7 @@ namespace mygame
 					IterateOverAndDispose(data.Collisions, data.PoolA, data.SolverA, data.PoolB, data.SolverB);
 			}
 
+			//Free all the entities here so nothing is dependent on its values
 			foreach (var data in _entityPools.Values)
 				data.Pool.FlushFreeIndices();
 
@@ -120,11 +121,13 @@ namespace mygame
 
 		void LateUpdate()
 		{
+			//Schedule the collision-check jobs so they run over to the next frame.
+			//That gives us a lot more time for the jobs to finish.
 			foreach (var data in _collisionSolvers)
 				data.Job = data.PoolA.ScheduleCollisionsVs(data.PoolB, out data.Collisions);
 		}
 
-		void IterateOverAndDispose(NativeArray<int> collisions, EntityPool pool, CollisionSolverDelegate onCollision)
+		static void IterateOverAndDispose(NativeArray<int> collisions, EntityPool pool, CollisionSolverDelegate onCollision)
 		{
 			if (!collisions.IsCreated)
 				return;
@@ -145,7 +148,7 @@ namespace mygame
 			collisions.Dispose();
 		}
 
-		void IterateOverAndDispose(NativeArray<int> collisions, EntityPool poolA, CollisionSolverDelegate onCollisionA, EntityPool poolB, CollisionSolverDelegate onCollisionB)
+		static void IterateOverAndDispose(NativeArray<int> collisions, EntityPool poolA, CollisionSolverDelegate onCollisionA, EntityPool poolB, CollisionSolverDelegate onCollisionB)
 		{
 			if (!collisions.IsCreated)
 				return;
