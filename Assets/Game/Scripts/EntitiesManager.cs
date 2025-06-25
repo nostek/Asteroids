@@ -111,12 +111,15 @@ namespace mygame
 			foreach (var data in _entityPools.Values)
 				data.Pool.FlushFreeIndices();
 
-			//We want these jobs to run in parallel, so we schedule them and complete them in the correct order.
+			//We want these jobs to run in parallel, so we schedule them first, then complete them in the correct order.
 			foreach (var data in _entityPools.Values)
 				data.Job = data.Pool.ScheduleUpdate(_worldBoundsManager.Bounds);
 			foreach (var data in _entityPools.Values)
 				data.Job.Complete();
+		}
 
+		void LateUpdate()
+		{
 			foreach (var data in _collisionSolvers)
 				data.Job = data.PoolA.ScheduleCollisionsVs(data.PoolB, out data.Collisions);
 		}
