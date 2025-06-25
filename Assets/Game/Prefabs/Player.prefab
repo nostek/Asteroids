@@ -151,6 +151,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06c1a62d0dbd546d2af518ce6fc2b6a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rotationSpeed: 180
+  _thrustSpeed: 5
+  _maxSpeed: 5
+  _breakSpeed: 10
+  _prefabMissile: {fileID: 2743347620663388294, guid: 7db79778b336d7a49a94eef34ff33a1d, type: 3}
 --- !u!114 &-611873155207169729
 MonoBehaviour:
   m_ObjectHideFlags: 0
