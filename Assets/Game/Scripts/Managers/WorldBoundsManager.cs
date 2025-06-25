@@ -9,14 +9,14 @@ namespace mygame
 
 		void Awake()
 		{
-			var camera = Camera.main;
-			Assert.IsNotNull(camera, "Main camera not found. Please ensure a camera is present in the scene.");
+			var cam = Camera.main;
+			Assert.IsNotNull(cam, "Main camera not found. Please ensure a camera is present in the scene.");
 
 			_bounds = new Vector4(
-				-camera.orthographicSize * camera.aspect,
-				-camera.orthographicSize,
-				camera.orthographicSize * camera.aspect,
-				camera.orthographicSize
+				-cam.orthographicSize * cam.aspect,
+				-cam.orthographicSize,
+				cam.orthographicSize * cam.aspect,
+				cam.orthographicSize
 			);
 		}
 

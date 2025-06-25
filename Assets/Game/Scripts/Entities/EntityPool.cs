@@ -12,7 +12,7 @@ namespace mygame
 	public class EntityPool : System.IDisposable
 	{
 		readonly GameObject _prefabObject;
-		readonly float _objectScale = 1f;
+		readonly float _objectScale;
 
 		readonly List<int> _freeIndices = new();
 
@@ -44,7 +44,7 @@ namespace mygame
 
 			if (_parent != null)
 			{
-				GameObject.Destroy(_parent.gameObject);
+				Object.Destroy(_parent.gameObject);
 				_parent = null;
 			}
 		}
@@ -88,7 +88,7 @@ namespace mygame
 
 		public void FlushFreeIndices()
 		{
-			// Not superhappy about this. It needs a sort so we dont remove things after _active has been decremented.
+			// Not super happy about this. It needs a sort so we don't remove things after _active has been decremented.
 
 			if (_freeIndices.Count == 0)
 				return;
@@ -140,7 +140,7 @@ namespace mygame
 			_objects = new Transform[capacity];
 			for (int i = 0; i < capacity; i++)
 			{
-				var go = GameObject.Instantiate(_prefabObject, _parent);
+				var go = Object.Instantiate(_prefabObject, _parent);
 				go.SetActive(false);
 				_objects[i] = go.transform;
 			}
