@@ -34,6 +34,7 @@ public class PooledObjectManager : System.IDisposable
 
 		_parent = new GameObject($"Pool {prefab.name}").transform;
 
+		//TODO: Make a Worlds Bounds Manager
 		var camera = Camera.main;
 		Assert.IsNotNull(camera, "Main camera not found. Please ensure a camera is present in the scene.");
 
@@ -133,6 +134,8 @@ public class PooledObjectManager : System.IDisposable
 		_transformAccessArray = new TransformAccessArray(_pooledObjects);
 	}
 
+	#region SCHEDULE UPDATE
+
 	public JobHandle ScheduleUpdate()
 	{
 		return new UpdateJob
@@ -176,6 +179,10 @@ public class PooledObjectManager : System.IDisposable
 			transform.localPosition = new float3(pos.xy, 0f);
 		}
 	}
+
+	#endregion
+
+	#region SCHEDULE COLLISIONS
 
 	public JobHandle ScheduleCollisionsVs(PooledObjectManager other, out NativeArray<int> collisions)
 	{
@@ -231,4 +238,6 @@ public class PooledObjectManager : System.IDisposable
 			}
 		}
 	}
+
+	#endregion
 }
