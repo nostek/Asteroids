@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.github.nostek.unityservicelocator": {
+      "version": "https://github.com/nostek/UnityServiceLocator.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "76bd7c810e9d7d6a9833bc5f2e5804f0710f5405"
+    },
     "com.unity.2d.animation": {
       "version": "11.0.0",
       "depth": 0,
