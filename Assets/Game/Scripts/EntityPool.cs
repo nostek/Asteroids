@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -18,6 +19,8 @@ namespace mygame
 
 		readonly GameObject _prefabObject;
 		readonly float _objectScale = 1f;
+
+		readonly HashSet<int> _freeIndices = new();
 
 		Transform[] _pooledObjects;
 		NativeArray<ObjectData> _objectDataArray;
@@ -67,6 +70,7 @@ namespace mygame
 			pooledObject.gameObject.SetActive(true);
 		}
 
+		/*
 		public void Despawn(GameObject pooledObject)
 		{
 			var index = System.Array.IndexOf(_pooledObjects, pooledObject);
@@ -74,20 +78,36 @@ namespace mygame
 
 			Despawn(index);
 		}
+		*/
 
 		public void Despawn(int index)
 		{
 			Assert.IsTrue(index >= 0 && index < _pooledObjects.Length, "Index out of bounds for pooled objects.");
 			Assert.IsTrue(_objectDataArray[index].active, "Index is not active in the pool.");
 
-			_objectDataArray[index] = new ObjectData { active = false };
-			_pooledObjects[index].gameObject.SetActive(false);
+			_freeIndices.Add(index);
 		}
 
 		public Vector2 GetPositionAtIndex(int index)
 		{
 			Assert.IsTrue(index >= 0 && index < _objectPositionsArray.Length, "Index out of bounds for object positions.");
 			return _objectPositionsArray[index];
+		}
+
+		public void FlushFreeIndices()
+		{
+			foreach (var index in _freeIndices)
+				DespawnNow(index);
+			_freeIndices.Clear();
+		}
+
+		void DespawnNow(int index)
+		{
+			Assert.IsTrue(index >= 0 && index < _pooledObjects.Length, "Index out of bounds for pooled objects.");
+			Assert.IsTrue(_objectDataArray[index].active, "Index is not active in the pool.");
+
+			_objectDataArray[index] = new ObjectData { active = false };
+			_pooledObjects[index].gameObject.SetActive(false);
 		}
 
 		int GetFreeIndex()

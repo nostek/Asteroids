@@ -97,6 +97,10 @@ namespace mygame
 			IterateOverAndDispose(_smallVsMediumCollisions, _poolAsteroidsSmall, OnNoop, _poolAsteroidsMedium, OnMediumAsteroid);
 			IterateOverAndDispose(_smallVsBigCollisions, _poolAsteroidsSmall, OnNoop, _poolAsteroidsBig, OnBigAsteroid);
 
+			_poolAsteroidsBig.FlushFreeIndices();
+			_poolAsteroidsMedium.FlushFreeIndices();
+			_poolAsteroidsSmall.FlushFreeIndices();
+
 			//We want these jobs to run in parallel, so we schedule them and complete them in the correct order.
 			var jobBig = _poolAsteroidsBig.ScheduleUpdate(_worldBoundsManager.Bounds);
 			var jobMedium = _poolAsteroidsMedium.ScheduleUpdate(_worldBoundsManager.Bounds);
@@ -129,6 +133,7 @@ namespace mygame
 
 					if (pool != _poolAsteroidsSmall)
 						pool.Despawn(i);
+					pool.Despawn(otherIndex);
 
 					onCollision(posA, posB);
 				}
