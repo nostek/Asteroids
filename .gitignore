@@ -1,0 +1,48 @@
+# ---------------[ Custom ]------------------ #
+
+# ---------------[ Unity generated ]------------------ #
+Temp/
+[O,o]bj/
+UnityGenerated/
+Library/
+/WebGL/
+/OSX
+/iOS
+/Android
+/iOS Builds
+/Android Builds
+/Logs
+/UserSettings
+
+# ----[ Visual Studio / MonoDevelop generated ]------- #
+
+Bin/
+ExportedObj/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+.vs/
+.vscode/
+.idea/
+
+# -------------[ OS generated ]------------------------ #
+.DS_Store
+.DS_Store?
+#._*
+#.Spotlight-V100
+#.Trashes
+#ehthumbs.db
+#Thumbs.db
+.mayaSwatches/
+
+*.fbm
+*.fbm.meta
+Recordings
+kernelsCache
+*.blend1
