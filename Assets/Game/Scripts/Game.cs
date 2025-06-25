@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEventsCenter;
 using UnityServiceLocator;
 
 namespace mygame
@@ -51,9 +52,9 @@ namespace mygame
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop, _prefabAsteroidMedium, OnMediumAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop, _prefabAsteroidBig, OnBigAsteroid);
 
-			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnNoop, _prefabAsteroidBig, OnBigAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnNoop, _prefabAsteroidMedium, OnMediumAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnNoop, _prefabAsteroidSmall, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileBigAsteroid, _prefabAsteroidBig, OnBigAsteroid);
+			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileMediumAsteroid, _prefabAsteroidMedium, OnMediumAsteroid);
+			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileSmallAsteroid, _prefabAsteroidSmall, OnNoop);
 
 			for (int i = 0; i < 10; i++)
 				_entitiesManager.Spawn(
@@ -64,6 +65,21 @@ namespace mygame
 
 			// Spawn the player at the center of the world bounds
 			Instantiate(_prefabPlayer);
+		}
+
+		void OnMissileBigAsteroid(Vector2 position, Vector2 otherPosition)
+		{
+			EventsCenter.Invoke(new GameEvents.AddPointsEvent(100));
+		}
+
+		void OnMissileMediumAsteroid(Vector2 position, Vector2 otherPosition)
+		{
+			EventsCenter.Invoke(new GameEvents.AddPointsEvent(200));
+		}
+
+		void OnMissileSmallAsteroid(Vector2 position, Vector2 otherPosition)
+		{
+			EventsCenter.Invoke(new GameEvents.AddPointsEvent(300));
 		}
 
 		void OnBigAsteroid(Vector2 position, Vector2 otherPosition)
