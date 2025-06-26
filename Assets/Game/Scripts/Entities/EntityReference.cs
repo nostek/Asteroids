@@ -27,5 +27,7 @@ namespace mygame
 		{
 			return new EntityReference(_pool, GetGameObject().transform);
 		}
+
+		public bool IsValid() => _pool != null;
 	}
 }
