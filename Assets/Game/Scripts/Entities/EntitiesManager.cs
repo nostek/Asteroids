@@ -63,12 +63,12 @@ namespace mygame
 				data.Pool.Dispose();
 		}
 
-		public void RegisterEntity(int keyEntity, GameObject prefab, int ensureCapacity = 10)
+		public void RegisterEntity(int keyEntity, GameObject prefab, float halfSize, int ensureCapacity = 10)
 		{
 			Assert.IsNotNull(prefab, "Prefab cant be null");
 			Assert.IsFalse(_entityPools.ContainsKey(keyEntity), $"Entity is already registered: {keyEntity} Prefab: {prefab.name}");
 
-			_entityPools.Add(keyEntity, new EntityData() { Pool = new EntityPool(prefab, ensureCapacity) });
+			_entityPools.Add(keyEntity, new EntityData() { Pool = new EntityPool(prefab, halfSize, ensureCapacity) });
 		}
 
 		public void RegisterEntityLifetime(int keyEntity, float secondsToLive)

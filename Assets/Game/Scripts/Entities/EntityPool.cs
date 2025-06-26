@@ -12,7 +12,7 @@ namespace mygame
 	public class EntityPool : System.IDisposable
 	{
 		readonly GameObject _prefabObject;
-		readonly float _objectScale;
+		readonly float _objectHalfSize;
 
 		readonly List<int> _freeIndices = new();
 
@@ -25,11 +25,11 @@ namespace mygame
 
 		Transform _parent;
 
-		public EntityPool(GameObject prefab, int ensureCapacity)
+		public EntityPool(GameObject prefab, float halfSize, int ensureCapacity)
 		{
 			Assert.IsNotNull(prefab, "Prefab object is not supplied");
 			_prefabObject = prefab;
-			_objectScale = prefab.transform.localScale.x * 0.5f; // Half the size and assuming uniform scale
+			_objectHalfSize = halfSize;
 			_active = 0;
 
 			_parent = new GameObject($"Pool {prefab.name}").transform;
@@ -207,7 +207,7 @@ namespace mygame
 				directionWithSpeed = _objectDirectionAndSpeedArray,
 				deltaTime = Time.deltaTime,
 				bounds = bounds,
-				scale = _objectScale
+				scale = _objectHalfSize
 			}.Schedule(_transformAccessArray);
 		}
 
@@ -259,7 +259,7 @@ namespace mygame
 				b_positions = other._objectPositionsArray,
 				b_positions_length = other._active,
 
-				colliderDistance = (_objectScale + other._objectScale) * (_objectScale + other._objectScale),
+				colliderDistance = (_objectHalfSize + other._objectHalfSize) * (_objectHalfSize + other._objectHalfSize),
 				collisions = collisions,
 				ignoreSameIndex = this == other // Avoid self-collision if comparing with itself
 			}.Schedule(_active, 32);
