@@ -168,7 +168,7 @@ namespace mygame
 
 		void OnPlayerSpawnHit(EntityReference _, EntityReference __)
 		{
-			_invalidSpawnFrame = Time.frameCount + 1;
+			_invalidSpawnFrame = Time.frameCount + 1; //We have a Asteroid inside the spawn area this frame
 		}
 
 		void OnMissileVsBigAsteroid(EntityReference missile, EntityReference asteroid)
