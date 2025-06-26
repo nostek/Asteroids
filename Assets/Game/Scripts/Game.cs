@@ -97,21 +97,25 @@ namespace mygame
 					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
 
-			_ = TrySpawnPlayerAsync(0f); //_ = to suppress async warning
+			_ = TrySpawnPlayerAsync(1.0f); //_ = to suppress async warning
 		}
 
 		#region PLAYER
 
-		//Uses Awaitable instead of Coroutines which should not create any garbage.
+		//Uses Awaitable instead of Coroutines which does not create any garbage.
 		//In production I would probably use UniTask as it currently has a lot more support.
 		async Awaitable TrySpawnPlayerAsync(float timeDelayUntilSpawn)
 		{
+			EventsCenter.Invoke(new GameEvents.WaitingForSpawnEvent(true));
+
 			if (timeDelayUntilSpawn > 0f)
 				await Awaitable.WaitForSecondsAsync(timeDelayUntilSpawn);
 
 			//if anything is inside player spawn, we dont want to spawn
 			while (Time.frameCount <= _invalidSpawnFrame)
 				await Awaitable.NextFrameAsync();
+
+			EventsCenter.Invoke(new GameEvents.WaitingForSpawnEvent(false));
 
 			SpawnPlayer();
 		}

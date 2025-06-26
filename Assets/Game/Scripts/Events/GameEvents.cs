@@ -16,5 +16,11 @@ namespace mygame
 			public LivesChangedEvent(int lives) => (Lives) = (lives);
 			public readonly int Lives;
 		}
+
+		public readonly struct WaitingForSpawnEvent : IEvent
+		{
+			public WaitingForSpawnEvent(bool waiting) => Waiting = waiting;
+			public readonly bool Waiting;
+		}
 	}
 }
