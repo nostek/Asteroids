@@ -55,7 +55,7 @@ namespace mygame
 				data.Pool.Dispose();
 		}
 
-		public void RegisterEntity(GameObject prefab, int ensureCapacity = 50)
+		public void RegisterEntity(GameObject prefab, int ensureCapacity = 10)
 		{
 			Assert.IsFalse(_entityPools.ContainsKey(prefab), "Entity prefab is already registered: " + prefab.name);
 

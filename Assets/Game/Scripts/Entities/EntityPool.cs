@@ -131,21 +131,38 @@ namespace mygame
 			if (_objectPositionsArray.IsCreated && _objectPositionsArray.Length >= capacity)
 				return;
 
-			//TODO: Rescale the existing arrays if needed
+			_objectPositionsArray = CreateOrScaleArray(_objectPositionsArray, capacity);
+			_objectDirectionAndSpeedArray = CreateOrScaleArray(_objectDirectionAndSpeedArray, capacity);
 
-			_objectPositionsArray = new NativeArray<float2>(capacity, Allocator.Persistent, NativeArrayOptions.ClearMemory);
-			_objectDirectionAndSpeedArray = new NativeArray<float2>(capacity, Allocator.Persistent, NativeArrayOptions.ClearMemory);
-
-			_objects = new Transform[capacity];
-			for (int i = 0; i < capacity; i++)
+			static NativeArray<T> CreateOrScaleArray<T>(NativeArray<T> current, int capacity) where T : struct
 			{
-				var go = Object.Instantiate(_prefabObject, _parent);
-				go.SetActive(false);
-				_objects[i] = go.transform;
+				//Make a new NativeArray and copy over excisting data if any.
+				//Dispose the excisting array if it excists.
+				var ret = new NativeArray<T>(capacity, Allocator.Persistent, NativeArrayOptions.ClearMemory);
+				if (current.IsCreated)
+				{
+					NativeArray<T>.Copy(current, ret, current.Length);
+					current.Dispose();
+				}
+				return ret;
 			}
 
-			if (_transformAccessArray.isCreated)
-				_transformAccessArray.Dispose();
+			//Rescale the objects array and copy over excisting data if any
+			{
+				var objects = new Transform[capacity];
+				if (_objects != null)
+					System.Array.Copy(_objects, objects, _objects.Length);
+				for (int i = _objects != null ? _objects.Length : 0; i < capacity; i++)
+				{
+					var go = Object.Instantiate(_prefabObject, _parent);
+					go.SetActive(false);
+					objects[i] = go.transform;
+				}
+				_objects = objects;
+			}
+
+			//Recreate the transform access array with the new values
+			if (_transformAccessArray.isCreated) _transformAccessArray.Dispose();
 			_transformAccessArray = new TransformAccessArray(_objects);
 		}
 
