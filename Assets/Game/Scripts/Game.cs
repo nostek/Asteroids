@@ -50,6 +50,7 @@ namespace mygame
 			_entitiesManager.RegisterEntity(_prefabAsteroidMedium);
 			_entitiesManager.RegisterEntity(_prefabAsteroidSmall);
 			_entitiesManager.RegisterEntity(_prefabMissile);
+			_entitiesManager.RegisterEntity(_prefabPlayer, ensureCapacity: 1); //Only want one of these
 
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidBig, OnBigAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid);
@@ -62,6 +63,10 @@ namespace mygame
 			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileMediumAsteroid, _prefabAsteroidMedium, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileSmallAsteroid, _prefabAsteroidSmall, OnNoop);
 
+			_entitiesManager.RegisterCollisionSolver(_prefabPlayer, OnPlayerHit, _prefabAsteroidBig, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(_prefabPlayer, OnPlayerHit, _prefabAsteroidMedium, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(_prefabPlayer, OnPlayerHit, _prefabAsteroidSmall, OnNoop);
+
 			for (int i = 0; i < 3; i++)
 				_entitiesManager.Spawn(
 					_prefabAsteroidBig,
@@ -70,7 +75,14 @@ namespace mygame
 				);
 
 			// Spawn the player at the center of the world bounds
-			Instantiate(_prefabPlayer);
+			//TODO: EntityReference index is not stable. It can be invalid after flushing despawned entities
+			var entity = _entitiesManager.Spawn(_prefabPlayer, Vector2.zero, Vector2.zero);
+			entity.GetGameObject().GetComponent<Player>().Entity = entity;
+		}
+
+		void OnPlayerHit(EntityReference player, EntityReference asteroid)
+		{
+			Debug.Log("We died");
 		}
 
 		void OnMissileBigAsteroid(EntityReference missile, EntityReference asteroid)

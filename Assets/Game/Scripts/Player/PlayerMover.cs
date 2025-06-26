@@ -16,6 +16,7 @@ namespace mygame
 		[SerializeField] GameObject _prefabMissile;
 
 		Transform _transform;
+		Player _player;
 		PlayerInput _input;
 
 		EntitiesManager _entitiesManager;
@@ -28,6 +29,9 @@ namespace mygame
 			Assert.IsNotNull(_prefabMissile, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 
 			_transform = GetComponent<Transform>();
+
+			_player = GetComponent<Player>();
+			Assert.IsNotNull(_player, "Player could not be found.");
 
 			_input = GetComponent<PlayerInput>();
 			Assert.IsNotNull(_input, "PlayerInput could not be found.");
@@ -52,6 +56,8 @@ namespace mygame
 			{
 				//add forward momentum but clamp it at _maxSpeed
 				_moveDirection = Vector3.ClampMagnitude(_moveDirection + _thrustSpeed * dt * fwd, _maxSpeed);
+
+				_player.Entity.SetDirectionAndSpeed(_moveDirection);
 			}
 			else if (_input.IsBreaking)
 			{
@@ -61,12 +67,16 @@ namespace mygame
 				var speed = _moveDirection.magnitude;
 				speed = Mathf.Max(0f, speed - _breakSpeed * dt);
 				_moveDirection = _moveDirection.normalized * speed;
+
+				_player.Entity.SetDirectionAndSpeed(_moveDirection);
 			}
 
-			pos += _moveDirection * dt;
-			rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _rotationSpeed * dt * -1f);
-
-			_transform.SetLocalPositionAndRotation(pos, rot);
+			//pos += _moveDirection * dt;
+			if (_rotationSpeed != 0f)
+			{
+				rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _rotationSpeed * dt * -1f);
+				_transform.localRotation = rot;
+			}
 		}
 	}
 }
