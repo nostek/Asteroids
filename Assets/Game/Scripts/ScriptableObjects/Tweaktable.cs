@@ -24,5 +24,9 @@ namespace mygame
 		public int PointsForBigAsteroid => _pointsForBigAsteroid;
 		public int PointsForMediumAsteroid => _pointsForMediumAsteroid;
 		public int PointsForSmallAsteroid => _pointsForSmallAsteroid;
+
+		[Header("Player")]
+		[SerializeField] int _playerLives = 3;
+		public int PlayerLives => _playerLives;
 	}
 }

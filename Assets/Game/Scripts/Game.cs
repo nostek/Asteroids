@@ -24,6 +24,7 @@ namespace mygame
 		float _halfScaleBigAsteroid, _halfScaleMediumAsteroid, _halfScaleSmallAsteroid;
 
 		int _score = 0;
+		int _lives = 0;
 
 		void Awake()
 		{
@@ -47,6 +48,9 @@ namespace mygame
 			_halfScaleBigAsteroid = _prefabAsteroidBig.transform.localScale.x * 0.5f;
 			_halfScaleMediumAsteroid = _prefabAsteroidMedium.transform.localScale.x * 0.5f;
 			_halfScaleSmallAsteroid = _prefabAsteroidSmall.transform.localScale.x * 0.5f;
+
+			_lives = _tweaktable.PlayerLives;
+			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
 
 			_entitiesManager.RegisterEntity(_prefabAsteroidBig);
 			_entitiesManager.RegisterEntity(_prefabAsteroidMedium);
@@ -100,9 +104,14 @@ namespace mygame
 		void OnPlayerHit(EntityReference player, EntityReference asteroid)
 		{
 			player.Despawn();
+
 			Debug.Log("We died");
 
-			_ = TrySpawnPlayerAsync(1f); //_ = to suppress async warning
+			_lives--;
+			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
+
+			if (_lives > 0)
+				_ = TrySpawnPlayerAsync(1f); //_ = to suppress async warning
 		}
 
 		void OnMissileBigAsteroid(EntityReference missile, EntityReference asteroid)

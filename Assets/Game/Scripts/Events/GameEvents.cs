@@ -10,5 +10,11 @@ namespace mygame
 			public readonly int AddedPoints;
 			public readonly int TotalPoints;
 		}
+
+		public readonly struct LivesChangedEvent : IEvent
+		{
+			public LivesChangedEvent(int lives) => (Lives) = (lives);
+			public readonly int Lives;
+		}
 	}
 }
