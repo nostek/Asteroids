@@ -9,9 +9,9 @@ namespace mygame
 		[SerializeField] Vector2 _randomBigAsteroidSpeedBetween;
 		[SerializeField] Vector2 _randomMediumAsteroidSpeedBetween;
 		[SerializeField] Vector2 _randomSmallAsteroidSpeedBetween;
-		public Vector2 RandomBigAsteroidSpeedBetween => _randomBigAsteroidSpeedBetween;
-		public Vector2 RandomMediumAsteroidSpeedBetween => _randomMediumAsteroidSpeedBetween;
-		public Vector2 RandomSmallAsteroidSpeedBetween => _randomSmallAsteroidSpeedBetween;
+		public float RandomBigAsteroidSpeedBetween => Random.Range(_randomBigAsteroidSpeedBetween.x, _randomBigAsteroidSpeedBetween.y);
+		public float RandomMediumAsteroidSpeedBetween => Random.Range(_randomMediumAsteroidSpeedBetween.x, _randomMediumAsteroidSpeedBetween.y);
+		public float RandomSmallAsteroidSpeedBetween => Random.Range(_randomSmallAsteroidSpeedBetween.x, _randomSmallAsteroidSpeedBetween.y);
 
 		[Header("Missiles")]
 		[SerializeField] float _missileSpeed;

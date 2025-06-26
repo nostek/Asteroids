@@ -99,7 +99,7 @@ namespace mygame
 				_entitiesManager.Spawn(
 					GameEntities.AsteroidBig,
 					_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid),
-					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
+					Random.insideUnitCircle.normalized * _tweaktable.RandomBigAsteroidSpeedBetween
 				);
 
 			TrySpawnPlayerAsync(1f).SafeExecute();
@@ -233,7 +233,7 @@ namespace mygame
 
 		#region ASTEROID ACTIONS
 
-		void SplitAsteroid(EntityReference asteroid, EntityReference other, int entityKey, float halfSize, Vector2 randomSpeed)
+		void SplitAsteroid(EntityReference asteroid, EntityReference other, int entityKey, float halfSize, float randomSpeed)
 		{
 			var pos = asteroid.GetPosition();
 			var posOther = other.GetPosition();
@@ -241,18 +241,15 @@ namespace mygame
 			var dir = (posOther - pos).normalized;
 			var right = Vector3.Cross(Vector3.forward, dir);
 
-			var speed = Random.Range(randomSpeed.x, randomSpeed.y);
-
-			_entitiesManager.Spawn(entityKey, pos + (Vector2)right * halfSize, right * speed);
-			_entitiesManager.Spawn(entityKey, pos - (Vector2)right * halfSize, -right * speed);
+			_entitiesManager.Spawn(entityKey, pos + (Vector2)right * halfSize, right * randomSpeed);
+			_entitiesManager.Spawn(entityKey, pos - (Vector2)right * halfSize, -right * randomSpeed);
 		}
 
-		void RespawnAsteroid(EntityReference asteroid, EntityReference other, int entityKey, Vector2 randomSpeed) //TODO: Terrible name
+		void RespawnAsteroid(EntityReference asteroid, EntityReference other, int entityKey, float randomSpeed) //TODO: Terrible name
 		{
-			var speed = Random.Range(randomSpeed.x, randomSpeed.y);
 			var pos = asteroid.GetPosition();
 			var dir = (pos - other.GetPosition()).normalized;
-			_entitiesManager.Spawn(entityKey, pos, dir * speed);
+			_entitiesManager.Spawn(entityKey, pos, dir * randomSpeed);
 		}
 
 		#endregion
