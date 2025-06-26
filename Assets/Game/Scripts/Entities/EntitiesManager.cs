@@ -7,6 +7,7 @@ using UnityServiceLocator;
 
 namespace mygame
 {
+	[DefaultExecutionOrder(-1)]
 	public class EntitiesManager : MonoBehaviour
 	{
 		public delegate void CollisionSolverDelegate(EntityReference collider, EntityReference otherCollider);
