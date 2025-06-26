@@ -71,6 +71,7 @@ MonoBehaviour:
   _prefabAsteroidMedium: {fileID: 2743347620663388294, guid: c2982054019258f479078b338c2ff5fc, type: 3}
   _prefabAsteroidSmall: {fileID: 2743347620663388294, guid: 38a5ec998d68ab04aa3a98e8b00cfed1, type: 3}
   _prefabPlayer: {fileID: 8750356187181814245, guid: 932b72eb0f12d9544937a77f6f21c2cd, type: 3}
+  _prefabPlayerSpawn: {fileID: 1559268473216756897, guid: 762d805b1dda8164fb8c6f2d31eb4e9c, type: 3}
   _prefabMissile: {fileID: 2743347620663388294, guid: 7db79778b336d7a49a94eef34ff33a1d, type: 3}
 --- !u!114 &-8281545801764551450
 MonoBehaviour:
