@@ -57,6 +57,7 @@ namespace mygame
 
 		public void RegisterEntity(GameObject prefab, int ensureCapacity = 10)
 		{
+			Assert.IsNotNull(prefab, "Prefab cant be null");
 			Assert.IsFalse(_entityPools.ContainsKey(prefab), "Entity prefab is already registered: " + prefab.name);
 
 			_entityPools.Add(prefab, new EntityData() { Pool = new EntityPool(prefab, ensureCapacity) });
@@ -64,8 +65,9 @@ namespace mygame
 
 		public void RegisterCollisionSolver(GameObject prefab, CollisionSolverDelegate solver)
 		{
-			Assert.IsTrue(_entityPools.ContainsKey(prefab), "Entity prefab is not registered: " + prefab.name);
+			Assert.IsNotNull(prefab, "Prefab cant be null");
 			Assert.IsNotNull(solver, "Solver cant be null.");
+			Assert.IsTrue(_entityPools.ContainsKey(prefab), "Entity prefab is not registered: " + prefab.name);
 
 			_collisionSolvers.Add(new SolverData()
 			{
@@ -78,6 +80,8 @@ namespace mygame
 
 		public void RegisterCollisionSolver(GameObject prefabA, CollisionSolverDelegate solverA, GameObject prefabB, CollisionSolverDelegate solverB)
 		{
+			Assert.IsNotNull(prefabA, "Prefab cant be null");
+			Assert.IsNotNull(prefabB, "Prefab cant be null");
 			Assert.IsTrue(_entityPools.ContainsKey(prefabA), "Entity prefab is not registered: " + prefabA.name);
 			Assert.IsTrue(_entityPools.ContainsKey(prefabB), "Entity prefab is not registered: " + prefabB.name);
 			Assert.IsNotNull(solverA, "Solver cant be null.");
