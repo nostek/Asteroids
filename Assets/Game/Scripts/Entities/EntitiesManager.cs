@@ -17,7 +17,7 @@ namespace mygame
 			public JobHandle Job;
 		}
 
-		readonly Dictionary<GameObject, EntityData> _entityPools = new();
+		readonly Dictionary<int, EntityData> _entityPools = new();
 
 		class SolverData
 		{
@@ -63,62 +63,60 @@ namespace mygame
 				data.Pool.Dispose();
 		}
 
-		public void RegisterEntity(GameObject prefab, int ensureCapacity = 10)
+		public void RegisterEntity(int keyEntity, GameObject prefab, int ensureCapacity = 10)
 		{
 			Assert.IsNotNull(prefab, "Prefab cant be null");
-			Assert.IsFalse(_entityPools.ContainsKey(prefab), "Entity prefab is already registered: " + prefab.name);
+			Assert.IsFalse(_entityPools.ContainsKey(keyEntity), $"Entity is already registered: {keyEntity} Prefab: {prefab.name}");
 
-			_entityPools.Add(prefab, new EntityData() { Pool = new EntityPool(prefab, ensureCapacity) });
+			_entityPools.Add(keyEntity, new EntityData() { Pool = new EntityPool(prefab, ensureCapacity) });
 		}
 
-		public void RegisterEntityLifetime(GameObject prefab, float secondsToLive)
+		public void RegisterEntityLifetime(int keyEntity, float secondsToLive)
 		{
-			Assert.IsNotNull(prefab, "Prefab cant be null");
-			Assert.IsTrue(_entityPools.ContainsKey(prefab), "Entity prefab is not registered: " + prefab.name);
+			Assert.IsTrue(_entityPools.ContainsKey(keyEntity), $"Entity is not registered: {keyEntity}");
 
 			_lifeTimes.Add(new LifeTimeData()
 			{
-				Pool = _entityPools[prefab].Pool,
+				Pool = _entityPools[keyEntity].Pool,
 				SecondsToLive = secondsToLive
 			});
 		}
 
-		public void RegisterCollisionSolver(GameObject prefab, CollisionSolverDelegate solver)
+		public void RegisterCollisionSolver(int keyEntity, CollisionSolverDelegate solver)
 		{
-			Assert.IsNotNull(prefab, "Prefab cant be null");
 			Assert.IsNotNull(solver, "Solver cant be null.");
-			Assert.IsTrue(_entityPools.ContainsKey(prefab), "Entity prefab is not registered: " + prefab.name);
+			Assert.IsTrue(_entityPools.ContainsKey(keyEntity), $"Entity is not registered: {keyEntity}");
 
 			_collisionSolvers.Add(new SolverData()
 			{
-				PoolA = _entityPools[prefab].Pool,
-				PoolB = _entityPools[prefab].Pool,
+				PoolA = _entityPools[keyEntity].Pool,
+				PoolB = _entityPools[keyEntity].Pool,
 				SolverA = solver,
 				SolverB = null
 			});
 		}
 
-		public void RegisterCollisionSolver(GameObject prefabA, CollisionSolverDelegate solverA, GameObject prefabB, CollisionSolverDelegate solverB)
+		public void RegisterCollisionSolver(int keyEntityA, CollisionSolverDelegate solverA, int keyEntityB, CollisionSolverDelegate solverB)
 		{
-			Assert.IsNotNull(prefabA, "Prefab cant be null");
-			Assert.IsNotNull(prefabB, "Prefab cant be null");
-			Assert.IsTrue(_entityPools.ContainsKey(prefabA), "Entity prefab is not registered: " + prefabA.name);
-			Assert.IsTrue(_entityPools.ContainsKey(prefabB), "Entity prefab is not registered: " + prefabB.name);
+			Assert.IsTrue(_entityPools.ContainsKey(keyEntityA), $"Entity is not registered: {keyEntityA}");
+			Assert.IsTrue(_entityPools.ContainsKey(keyEntityB), $"Entity is not registered: {keyEntityB}");
 			Assert.IsNotNull(solverA, "Solver cant be null.");
 			Assert.IsNotNull(solverB, "Solver cant be null.");
 
 			_collisionSolvers.Add(new SolverData()
 			{
-				PoolA = _entityPools[prefabA].Pool,
-				PoolB = _entityPools[prefabB].Pool,
+				PoolA = _entityPools[keyEntityA].Pool,
+				PoolB = _entityPools[keyEntityB].Pool,
 				SolverA = solverA,
 				SolverB = solverB
 			});
 		}
 
-		public EntityReference Spawn(GameObject prefab, Vector2 position, Vector2 directionWithSpeed)
+		public EntityReference Spawn(int keyEntity, Vector2 position, Vector2 directionWithSpeed)
 		{
-			return _entityPools[prefab].Pool.Spawn(position, directionWithSpeed);
+			Assert.IsTrue(_entityPools.ContainsKey(keyEntity), $"Entity is not registered: {keyEntity}");
+
+			return _entityPools[keyEntity].Pool.Spawn(position, directionWithSpeed);
 		}
 
 		void Update()
