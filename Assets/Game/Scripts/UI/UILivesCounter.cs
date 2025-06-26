@@ -10,6 +10,10 @@ namespace mygame
 
 		void OnLivesChanged(GameEvents.LivesChangedEvent ev)
 		{
+			//add more ui elements if needed
+			while (transform.childCount < ev.Lives)
+				Instantiate(transform.GetChild(0).gameObject, transform);
+
 			for (int i = 0; i < transform.childCount; i++)
 				transform.GetChild(i).gameObject.SetActive(i < ev.Lives);
 		}
