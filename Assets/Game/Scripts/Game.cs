@@ -102,7 +102,7 @@ namespace mygame
 					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
 
-			_ = TrySpawnPlayerAsync(1.0f); //_ = to suppress async warning
+			TrySpawnPlayerAsync(1f).SafeExecute();
 		}
 
 		#region PLAYER
@@ -136,13 +136,13 @@ namespace mygame
 		{
 			player.Despawn();
 
-			Debug.Log("We died");
+			Log.D("We died");
 
 			_lives--;
 			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
 
 			if (_lives > 0)
-				_ = TrySpawnPlayerAsync(1f); //_ = to suppress async warning
+				TrySpawnPlayerAsync(1f).SafeExecute();
 			else
 				OnGameOver();
 		}
