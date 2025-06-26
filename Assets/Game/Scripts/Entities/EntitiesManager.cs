@@ -92,9 +92,9 @@ namespace mygame
 			});
 		}
 
-		public void Spawn(GameObject prefab, Vector2 position, Vector2 directionWithSpeed)
+		public EntityReference Spawn(GameObject prefab, Vector2 position, Vector2 directionWithSpeed)
 		{
-			_entityPools[prefab].Pool.Spawn(position, directionWithSpeed);
+			return _entityPools[prefab].Pool.Spawn(position, directionWithSpeed);
 		}
 
 		void Update()

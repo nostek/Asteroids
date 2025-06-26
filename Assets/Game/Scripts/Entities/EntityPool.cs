@@ -49,7 +49,7 @@ namespace mygame
 			}
 		}
 
-		public void Spawn(Vector2 position, Vector2 directionWithSpeed)
+		public EntityReference Spawn(Vector2 position, Vector2 directionWithSpeed)
 		{
 			int index = GetFreeIndex();
 
@@ -59,6 +59,8 @@ namespace mygame
 			var obj = _objects[index];
 			obj.SetLocalPositionAndRotation(position, Quaternion.LookRotation(Vector3.forward, directionWithSpeed.normalized));
 			obj.gameObject.SetActive(true);
+
+			return new EntityReference(this, index);
 		}
 
 		/*
