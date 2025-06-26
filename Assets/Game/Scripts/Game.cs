@@ -176,16 +176,7 @@ namespace mygame
 			missile.Despawn();
 			asteroid.Despawn();
 
-			var pos = missile.GetPosition();
-			var posOther = asteroid.GetPosition();
-
-			var dir = (pos - posOther).normalized;
-			var right = Vector3.Cross(Vector3.forward, dir);
-
-			var speed = Random.Range(_tweaktable.RandomMediumAsteroidSpeedBetween.x, _tweaktable.RandomMediumAsteroidSpeedBetween.y);
-
-			_entitiesManager.Spawn(GameEntities.AsteroidMedium, posOther + (Vector2)right * _halfSizeMediumAsteroid, right * speed);
-			_entitiesManager.Spawn(GameEntities.AsteroidMedium, posOther - (Vector2)right * _halfSizeMediumAsteroid, -right * speed);
+			SplitAsteroid(asteroid, missile, GameEntities.AsteroidMedium, _halfSizeMediumAsteroid, _tweaktable.RandomMediumAsteroidSpeedBetween);
 
 			_score += _tweaktable.PointsForBigAsteroid;
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForBigAsteroid, _score));
@@ -196,16 +187,7 @@ namespace mygame
 			missile.Despawn();
 			asteroid.Despawn();
 
-			var pos = missile.GetPosition();
-			var posOther = asteroid.GetPosition();
-
-			var dir = (pos - posOther).normalized;
-			var right = Vector3.Cross(Vector3.forward, dir);
-
-			var speed = Random.Range(_tweaktable.RandomSmallAsteroidSpeedBetween.x, _tweaktable.RandomSmallAsteroidSpeedBetween.y);
-
-			_entitiesManager.Spawn(GameEntities.AsteroidSmall, posOther + (Vector2)right * _halfSizeSmallAsteroid, right * speed);
-			_entitiesManager.Spawn(GameEntities.AsteroidSmall, posOther - (Vector2)right * _halfSizeSmallAsteroid, -right * speed);
+			SplitAsteroid(asteroid, missile, GameEntities.AsteroidSmall, _halfSizeSmallAsteroid, _tweaktable.RandomSmallAsteroidSpeedBetween);
 
 			_score += _tweaktable.PointsForMediumAsteroid;
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForMediumAsteroid, _score));
@@ -220,36 +202,56 @@ namespace mygame
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForSmallAsteroid, _score));
 		}
 
-		void OnBigAsteroid(EntityReference collider, EntityReference otherCollider)
+		void OnBigAsteroid(EntityReference asteroid, EntityReference otherCollider)
 		{
-			collider.Despawn();
+			asteroid.Despawn();
 
-			var speed = Random.Range(_tweaktable.RandomMediumAsteroidSpeedBetween.x, _tweaktable.RandomMediumAsteroidSpeedBetween.y);
-			var pos = collider.GetPosition();
-			var dir = (pos - otherCollider.GetPosition()).normalized;
-			_entitiesManager.Spawn(GameEntities.AsteroidMedium, pos, dir * speed);
+			RespawnAsteroid(asteroid, otherCollider, GameEntities.AsteroidMedium, _tweaktable.RandomMediumAsteroidSpeedBetween);
 		}
 
-		void OnMediumAsteroid(EntityReference collider, EntityReference otherCollider)
+		void OnMediumAsteroid(EntityReference asteroid, EntityReference otherCollider)
 		{
-			collider.Despawn();
+			asteroid.Despawn();
 
-			var speed = Random.Range(_tweaktable.RandomSmallAsteroidSpeedBetween.x, _tweaktable.RandomSmallAsteroidSpeedBetween.y);
-			var pos = collider.GetPosition();
-			var dir = (pos - otherCollider.GetPosition()).normalized;
-			_entitiesManager.Spawn(GameEntities.AsteroidSmall, pos, dir * speed);
+			RespawnAsteroid(asteroid, otherCollider, GameEntities.AsteroidSmall, _tweaktable.RandomSmallAsteroidSpeedBetween);
 		}
 
-		void OnInvertDirection(EntityReference collider, EntityReference otherCollider)
+		void OnInvertDirection(EntityReference asteroid, EntityReference otherCollider)
 		{
-			var speed = collider.GetDirectionAndSpeed().magnitude;
-			var pos = collider.GetPosition();
+			var speed = asteroid.GetDirectionAndSpeed().magnitude;
+			var pos = asteroid.GetPosition();
 			var dir = (pos - otherCollider.GetPosition()).normalized;
-			collider.SetDirectionAndSpeed(dir * speed);
+			asteroid.SetDirectionAndSpeed(dir * speed);
 		}
 
 		void OnNoop(EntityReference _, EntityReference __)
 		{
+		}
+
+		#endregion
+
+		#region ASTEROID ACTIONS
+
+		void SplitAsteroid(EntityReference asteroid, EntityReference other, int entityKey, float halfSize, Vector2 randomSpeed)
+		{
+			var pos = asteroid.GetPosition();
+			var posOther = other.GetPosition();
+
+			var dir = (posOther - pos).normalized;
+			var right = Vector3.Cross(Vector3.forward, dir);
+
+			var speed = Random.Range(randomSpeed.x, randomSpeed.y);
+
+			_entitiesManager.Spawn(entityKey, pos + (Vector2)right * halfSize, right * speed);
+			_entitiesManager.Spawn(entityKey, pos - (Vector2)right * halfSize, -right * speed);
+		}
+
+		void RespawnAsteroid(EntityReference asteroid, EntityReference other, int entityKey, Vector2 randomSpeed) //TODO: Terrible name
+		{
+			var speed = Random.Range(randomSpeed.x, randomSpeed.y);
+			var pos = asteroid.GetPosition();
+			var dir = (pos - other.GetPosition()).normalized;
+			_entitiesManager.Spawn(entityKey, pos, dir * speed);
 		}
 
 		#endregion
