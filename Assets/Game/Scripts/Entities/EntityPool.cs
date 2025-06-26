@@ -99,9 +99,6 @@ namespace mygame
 				DespawnNow(_freeIndices[i]);
 
 			_freeIndices.Clear();
-
-			_transformAccessArray.SetTransforms(_objects); // Update the TransformAccessArray with the current objects
-														   //TODO: Must be a better way instead of recreating the TransformAccessArray every time
 		}
 
 		void DespawnNow(int index)
@@ -111,10 +108,12 @@ namespace mygame
 
 			_objects[index].gameObject.SetActive(false);
 
-			_objectPositionsArray[index] = _objectPositionsArray[_active - 1];
+			_objectPositionsArray[index] = _objectPositionsArray[_active - 1]; // Just copy the values from the active element, as the current index data can be discarded
 			_objectDirectionAndSpeedArray[index] = _objectDirectionAndSpeedArray[_active - 1];
 
 			(_objects[index], _objects[_active - 1]) = (_objects[_active - 1], _objects[index]); // Swap the objects in the array
+
+			(_transformAccessArray[index], _transformAccessArray[_active - 1]) = (_transformAccessArray[_active - 1], _transformAccessArray[index]); // Swap the objects in the array
 
 			_active--;
 		}
