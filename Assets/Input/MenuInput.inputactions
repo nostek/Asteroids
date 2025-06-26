@@ -1,0 +1,34 @@
+{
+    "name": "MenuInput",
+    "maps": [
+        {
+            "name": "Actions",
+            "id": "a71def53-7e38-4c4f-8289-65536714e8b8",
+            "actions": [
+                {
+                    "name": "Accept",
+                    "type": "Button",
+                    "id": "7f147ec9-8002-4d64-853d-c6e623f9f786",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6a68d712-2168-4213-a046-c6ee43e125fc",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Accept",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
