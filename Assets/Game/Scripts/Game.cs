@@ -114,11 +114,18 @@ namespace mygame
 			EventsCenter.Invoke(new GameEvents.WaitingForSpawnEvent(true));
 
 			if (timeDelayUntilSpawn > 0f)
+			{
 				await Awaitable.WaitForSecondsAsync(timeDelayUntilSpawn);
+				if (this == null)
+					return;
+			}
 
 			//if anything is inside player spawn, we dont want to spawn
 			while (Time.frameCount <= _invalidSpawnFrame)
 				await Awaitable.NextFrameAsync();
+
+			if (this == null)
+				return;
 
 			EventsCenter.Invoke(new GameEvents.WaitingForSpawnEvent(false));
 
