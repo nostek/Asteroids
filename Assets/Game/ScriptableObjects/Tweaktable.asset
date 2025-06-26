@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332cfabc5dc214091923db1c6693542e, type: 3}
   m_Name: Tweaktable
   m_EditorClassIdentifier: 
-  _randomSpeedBetween: {x: 0.5, y: 4}
-  _missileSpeed: 15
+  _randomBigAsteroidSpeedBetween: {x: 0.5, y: 1}
+  _randomMediumAsteroidSpeedBetween: {x: 1, y: 2}
+  _randomSmallAsteroidSpeedBetween: {x: 2, y: 4}
+  _missileSpeed: 10

@@ -60,7 +60,7 @@ namespace mygame
 				_entitiesManager.Spawn(
 					_prefabAsteroidBig,
 					_worldBoundsManager.GetRandomInsideBounds(1f),
-					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomSpeedBetween.x, _tweaktable.RandomSpeedBetween.y)
+					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
 
 			// Spawn the player at the center of the world bounds
@@ -85,13 +85,13 @@ namespace mygame
 		void OnBigAsteroid(Vector2 position, Vector2 otherPosition)
 		{
 			var dir = (position - otherPosition).normalized;
-			_entitiesManager.Spawn(_prefabAsteroidMedium, position, dir * Random.Range(_tweaktable.RandomSpeedBetween.x, _tweaktable.RandomSpeedBetween.y));
+			_entitiesManager.Spawn(_prefabAsteroidMedium, position, dir * Random.Range(_tweaktable.RandomMediumAsteroidSpeedBetween.x, _tweaktable.RandomMediumAsteroidSpeedBetween.y));
 		}
 
 		void OnMediumAsteroid(Vector2 position, Vector2 otherPosition)
 		{
 			var dir = (position - otherPosition).normalized;
-			_entitiesManager.Spawn(_prefabAsteroidSmall, position, dir * Random.Range(_tweaktable.RandomSpeedBetween.x, _tweaktable.RandomSpeedBetween.y));
+			_entitiesManager.Spawn(_prefabAsteroidSmall, position, dir * Random.Range(_tweaktable.RandomSmallAsteroidSpeedBetween.x, _tweaktable.RandomSmallAsteroidSpeedBetween.y));
 		}
 
 		void OnNoop(Vector2 position, Vector2 otherPosition)

@@ -6,8 +6,12 @@ namespace mygame
 	public class Tweaktable : ScriptableObject
 	{
 		[Header("Asteroids")]
-		[SerializeField] Vector2 _randomSpeedBetween;
-		public Vector2 RandomSpeedBetween => _randomSpeedBetween;
+		[SerializeField] Vector2 _randomBigAsteroidSpeedBetween;
+		[SerializeField] Vector2 _randomMediumAsteroidSpeedBetween;
+		[SerializeField] Vector2 _randomSmallAsteroidSpeedBetween;
+		public Vector2 RandomBigAsteroidSpeedBetween => _randomBigAsteroidSpeedBetween;
+		public Vector2 RandomMediumAsteroidSpeedBetween => _randomMediumAsteroidSpeedBetween;
+		public Vector2 RandomSmallAsteroidSpeedBetween => _randomSmallAsteroidSpeedBetween;
 
 		[Header("Missiles")]
 		[SerializeField] float _missileSpeed;
