@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1d41a16581638547a3b580a1c4aaba5, type: 3}
+  m_Name: GameSoundsDatabase
+  m_EditorClassIdentifier: 
+  _explosionBig:
+    ID: 1073741824
+    _sourceAsset: {fileID: 11400000, guid: fb820144df6637241bb4f968f27d3fba, type: 2}
+    <DebugObject>k__BackingField: {fileID: 0}
+  _explosionMedium:
+    ID: 1073741825
+    _sourceAsset: {fileID: 11400000, guid: fb820144df6637241bb4f968f27d3fba, type: 2}
+    <DebugObject>k__BackingField: {fileID: 0}
+  _explosionSmall:
+    ID: 1073741826
+    _sourceAsset: {fileID: 11400000, guid: fb820144df6637241bb4f968f27d3fba, type: 2}
+    <DebugObject>k__BackingField: {fileID: 0}
+  _fireMissile:
+    ID: 1073741827
+    _sourceAsset: {fileID: 11400000, guid: fb820144df6637241bb4f968f27d3fba, type: 2}
+    <DebugObject>k__BackingField: {fileID: 0}
+  _shipThrust:
+    ID: 1073741828
+    _sourceAsset: {fileID: 11400000, guid: fb820144df6637241bb4f968f27d3fba, type: 2}
+    <DebugObject>k__BackingField: {fileID: 0}

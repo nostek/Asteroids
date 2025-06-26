@@ -23,6 +23,7 @@ namespace mygame
 
 		Tweaktable _tweaktable;
 		WindowsDatabase _windowsDatabase;
+		GameSoundsDatabase _soundsDatabase;
 
 		float _halfSizeBigAsteroid, _halfSizeMediumAsteroid, _halfSizeSmallAsteroid;
 		float _halfSizePlayer;
@@ -44,6 +45,7 @@ namespace mygame
 				.Get(out _windowsManager)
 				.Get(out _tweaktable)
 				.Get(out _windowsDatabase)
+				.Get(out _soundsDatabase)
 				.Done();
 
 			Assert.IsNotNull(_prefabAsteroidBig, "Prefab object is not assigned. Please assign a prefab in the inspector.");
@@ -164,6 +166,8 @@ namespace mygame
 
 			Log.D("We died");
 
+			_soundsDatabase.PlayExplosionBig();
+
 			_lives--;
 			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
 
@@ -195,6 +199,7 @@ namespace mygame
 			missile.Despawn();
 			asteroid.Despawn();
 
+			_soundsDatabase.PlayExplosionBig();
 			SplitAsteroid(asteroid, missile, GameEntities.AsteroidMedium, _halfSizeMediumAsteroid, _tweaktable.RandomMediumAsteroidSpeedBetween);
 
 			_score += _tweaktable.PointsForBigAsteroid;
@@ -206,6 +211,7 @@ namespace mygame
 			missile.Despawn();
 			asteroid.Despawn();
 
+			_soundsDatabase.PlayExplosionMedium();
 			SplitAsteroid(asteroid, missile, GameEntities.AsteroidSmall, _halfSizeSmallAsteroid, _tweaktable.RandomSmallAsteroidSpeedBetween);
 
 			_score += _tweaktable.PointsForMediumAsteroid;
@@ -217,6 +223,8 @@ namespace mygame
 			missile.Despawn();
 			asteroid.Despawn();
 
+			_soundsDatabase.PlayExplosionSmall();
+
 			_score += _tweaktable.PointsForSmallAsteroid;
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForSmallAsteroid, _score));
 		}
@@ -225,6 +233,7 @@ namespace mygame
 		{
 			asteroid.Despawn();
 
+			_soundsDatabase.PlayExplosionBig();
 			RespawnAsteroid(asteroid, otherCollider, GameEntities.AsteroidMedium, _tweaktable.RandomMediumAsteroidSpeedBetween);
 		}
 
@@ -232,6 +241,7 @@ namespace mygame
 		{
 			asteroid.Despawn();
 
+			_soundsDatabase.PlayExplosionMedium();
 			RespawnAsteroid(asteroid, otherCollider, GameEntities.AsteroidSmall, _tweaktable.RandomSmallAsteroidSpeedBetween);
 		}
 

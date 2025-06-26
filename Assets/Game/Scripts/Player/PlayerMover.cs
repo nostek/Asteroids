@@ -1,9 +1,9 @@
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityServiceLocator;
 
 namespace mygame
 {
+	[RequireComponent(typeof(Player), typeof(PlayerInput))]
 	public class PlayerMover : MonoBehaviour
 	{
 		[Header("Settings")]
@@ -18,20 +18,19 @@ namespace mygame
 
 		EntitiesManager _entitiesManager;
 		Tweaktable _tweaktable;
+		GameSoundsDatabase _soundsDatabase;
 
 		void Awake()
 		{
 			_transform = GetComponent<Transform>();
 
 			_player = GetComponent<Player>();
-			Assert.IsNotNull(_player, "Player could not be found.");
-
 			_input = GetComponent<PlayerInput>();
-			Assert.IsNotNull(_input, "PlayerInput could not be found.");
 
 			ServiceLocator.Lookup
 				.Get(out _entitiesManager)
 				.Get(out _tweaktable)
+				.Get(out _soundsDatabase)
 				.Done();
 		}
 
@@ -43,7 +42,10 @@ namespace mygame
 			Vector2 fwd = rot * Vector3.up; //Implicit conversion to Vector2
 
 			if (_input.UseShouldFire())
+			{
+				_soundsDatabase.PlayFireMissile();
 				_entitiesManager.Spawn(GameEntities.Missile, pos, fwd * _tweaktable.MissileSpeed);
+			}
 
 			if (_input.IsThrusting)
 			{
