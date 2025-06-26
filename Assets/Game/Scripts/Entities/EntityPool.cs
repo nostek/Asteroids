@@ -66,16 +66,6 @@ namespace mygame
 			return new EntityReference(this, index);
 		}
 
-		/*
-		public void Despawn(GameObject pooledObject)
-		{
-			var index = System.Array.IndexOf(_pooledObjects, pooledObject);
-			Assert.IsTrue(index >= 0, "Pooled object not found in the pool.");
-
-			Despawn(index);
-		}
-		*/
-
 		public void Despawn(int index)
 		{
 			Assert.IsTrue(index >= 0 && index < _objects.Length, "Index out of bounds for pooled objects.");
