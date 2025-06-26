@@ -18,7 +18,6 @@ namespace mygame
 
 		EntitiesManager _entitiesManager;
 		Tweaktable _tweaktable;
-		GameSoundsDatabase _soundsDatabase;
 
 		void Awake()
 		{
@@ -30,7 +29,6 @@ namespace mygame
 			ServiceLocator.Lookup
 				.Get(out _entitiesManager)
 				.Get(out _tweaktable)
-				.Get(out _soundsDatabase)
 				.Done();
 		}
 
@@ -41,11 +39,8 @@ namespace mygame
 			_transform.GetLocalPositionAndRotation(out var pos, out var rot);
 			Vector2 fwd = rot * Vector3.up; //Implicit conversion to Vector2
 
-			if (_input.UseShouldFire())
-			{
-				_soundsDatabase.PlayFireMissile();
+			if (_input.DoFire)
 				_entitiesManager.Spawn(GameEntities.Missile, pos, fwd * _tweaktable.MissileSpeed);
-			}
 
 			if (_input.IsThrusting)
 			{
