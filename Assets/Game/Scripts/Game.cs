@@ -56,10 +56,10 @@ namespace mygame
 			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileMediumAsteroid, _prefabAsteroidMedium, OnMediumAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileSmallAsteroid, _prefabAsteroidSmall, OnNoop);
 
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 3; i++)
 				_entitiesManager.Spawn(
 					_prefabAsteroidBig,
-					_worldBoundsManager.GetRandomInsideBounds(1f),
+					_worldBoundsManager.GetRandomInsideBounds(_prefabAsteroidBig.transform.localScale.x), //Assuming its uniform scale
 					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
 
@@ -69,17 +69,17 @@ namespace mygame
 
 		void OnMissileBigAsteroid(Vector2 position, Vector2 otherPosition)
 		{
-			EventsCenter.Invoke(new GameEvents.AddPointsEvent(100));
+			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForBigAsteroid));
 		}
 
 		void OnMissileMediumAsteroid(Vector2 position, Vector2 otherPosition)
 		{
-			EventsCenter.Invoke(new GameEvents.AddPointsEvent(200));
+			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForMediumAsteroid));
 		}
 
 		void OnMissileSmallAsteroid(Vector2 position, Vector2 otherPosition)
 		{
-			EventsCenter.Invoke(new GameEvents.AddPointsEvent(300));
+			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForSmallAsteroid));
 		}
 
 		void OnBigAsteroid(Vector2 position, Vector2 otherPosition)

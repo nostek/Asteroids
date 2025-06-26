@@ -16,5 +16,13 @@ namespace mygame
 		[Header("Missiles")]
 		[SerializeField] float _missileSpeed;
 		public float MissileSpeed => _missileSpeed;
+
+		[Header("Points")]
+		[SerializeField] int _pointsForBigAsteroid = 100;
+		[SerializeField] int _pointsForMediumAsteroid = 200;
+		[SerializeField] int _pointsForSmallAsteroid = 300;
+		public int PointsForBigAsteroid => _pointsForBigAsteroid;
+		public int PointsForMediumAsteroid => _pointsForMediumAsteroid;
+		public int PointsForSmallAsteroid => _pointsForSmallAsteroid;
 	}
 }
