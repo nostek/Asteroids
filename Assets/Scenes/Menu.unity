@@ -506,6 +506,8 @@ GameObject:
   - component: {fileID: 644597340}
   - component: {fileID: 644597342}
   - component: {fileID: 644597341}
+  - component: {fileID: 644597344}
+  - component: {fileID: 644597343}
   m_Layer: 5
   m_Name: Instructions
   m_TagString: Untagged
@@ -631,6 +633,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 644597339}
   m_CullTransparentMesh: 1
+--- !u!111 &644597343
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644597339}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: 6723225e6aa757e468fca1e7902718e8, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 6723225e6aa757e468fca1e7902718e8, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
+--- !u!225 &644597344
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644597339}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &671602059
 GameObject:
   m_ObjectHideFlags: 0
