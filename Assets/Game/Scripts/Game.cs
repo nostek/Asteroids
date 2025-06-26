@@ -98,7 +98,7 @@ namespace mygame
 			for (int i = 0; i < 3; i++)
 				_entitiesManager.Spawn(
 					GameEntities.AsteroidBig,
-					_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid), //Assuming its uniform scale
+					_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid),
 					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
 
