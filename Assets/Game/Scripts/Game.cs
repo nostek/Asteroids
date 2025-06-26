@@ -21,6 +21,8 @@ namespace mygame
 		EntitiesManager _entitiesManager;
 		Tweaktable _tweaktable;
 
+		float _halfScaleBigAsteroid, _halfScaleMediumAsteroid, _halfScaleSmallAsteroid;
+
 		void Awake()
 		{
 			GetComponent<ServiceBehaviour>().Install();
@@ -40,6 +42,10 @@ namespace mygame
 
 		void Start()
 		{
+			_halfScaleBigAsteroid = _prefabAsteroidBig.transform.localScale.x * 0.5f;
+			_halfScaleMediumAsteroid = _prefabAsteroidMedium.transform.localScale.x * 0.5f;
+			_halfScaleSmallAsteroid = _prefabAsteroidSmall.transform.localScale.x * 0.5f;
+
 			_entitiesManager.RegisterEntity(_prefabAsteroidBig);
 			_entitiesManager.RegisterEntity(_prefabAsteroidMedium);
 			_entitiesManager.RegisterEntity(_prefabAsteroidSmall);
@@ -47,19 +53,19 @@ namespace mygame
 
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidBig, OnBigAsteroid);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnDespawn);
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid, _prefabAsteroidBig, OnBigAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop, _prefabAsteroidMedium, OnMediumAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnNoop, _prefabAsteroidBig, OnBigAsteroid);
+			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnDespawn, _prefabAsteroidMedium, OnMediumAsteroid);
+			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnDespawn, _prefabAsteroidBig, OnBigAsteroid);
 
-			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileBigAsteroid, _prefabAsteroidBig, OnBigAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileMediumAsteroid, _prefabAsteroidMedium, OnMediumAsteroid);
+			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileBigAsteroid, _prefabAsteroidBig, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileMediumAsteroid, _prefabAsteroidMedium, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileSmallAsteroid, _prefabAsteroidSmall, OnNoop);
 
 			for (int i = 0; i < 3; i++)
 				_entitiesManager.Spawn(
 					_prefabAsteroidBig,
-					_worldBoundsManager.GetRandomInsideBounds(_prefabAsteroidBig.transform.localScale.x), //Assuming its uniform scale
+					_worldBoundsManager.GetRandomInsideBounds(_halfScaleBigAsteroid), //Assuming its uniform scale
 					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
 
@@ -67,34 +73,77 @@ namespace mygame
 			Instantiate(_prefabPlayer);
 		}
 
-		void OnMissileBigAsteroid(Vector2 position, Vector2 otherPosition)
+		void OnMissileBigAsteroid(EntityReference missile, EntityReference asteroid)
 		{
+			missile.Despawn();
+			asteroid.Despawn();
+
+			var pos = missile.GetPosition();
+			var posOther = asteroid.GetPosition();
+
+			var dir = (pos - posOther).normalized;
+			var right = Vector3.Cross(Vector3.forward, dir);
+
+			var speed = Random.Range(_tweaktable.RandomMediumAsteroidSpeedBetween.x, _tweaktable.RandomMediumAsteroidSpeedBetween.y);
+
+			_entitiesManager.Spawn(_prefabAsteroidMedium, posOther + (Vector2)right * _halfScaleMediumAsteroid, right * speed);
+			_entitiesManager.Spawn(_prefabAsteroidMedium, posOther - (Vector2)right * _halfScaleMediumAsteroid, -right * speed);
+
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForBigAsteroid));
 		}
 
-		void OnMissileMediumAsteroid(Vector2 position, Vector2 otherPosition)
+		void OnMissileMediumAsteroid(EntityReference missile, EntityReference asteroid)
 		{
+			missile.Despawn();
+			asteroid.Despawn();
+
+			var pos = missile.GetPosition();
+			var posOther = asteroid.GetPosition();
+
+			var dir = (pos - posOther).normalized;
+			var right = Vector3.Cross(Vector3.forward, dir);
+
+			var speed = Random.Range(_tweaktable.RandomSmallAsteroidSpeedBetween.x, _tweaktable.RandomSmallAsteroidSpeedBetween.y);
+
+			_entitiesManager.Spawn(_prefabAsteroidSmall, posOther + (Vector2)right * _halfScaleSmallAsteroid, right * speed);
+			_entitiesManager.Spawn(_prefabAsteroidSmall, posOther - (Vector2)right * _halfScaleSmallAsteroid, -right * speed);
+
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForMediumAsteroid));
 		}
 
-		void OnMissileSmallAsteroid(Vector2 position, Vector2 otherPosition)
+		void OnMissileSmallAsteroid(EntityReference missile, EntityReference asteroid)
 		{
+			missile.Despawn();
+			asteroid.Despawn();
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForSmallAsteroid));
 		}
 
-		void OnBigAsteroid(Vector2 position, Vector2 otherPosition)
+		void OnBigAsteroid(EntityReference collider, EntityReference otherCollider)
 		{
-			var dir = (position - otherPosition).normalized;
-			_entitiesManager.Spawn(_prefabAsteroidMedium, position, dir * Random.Range(_tweaktable.RandomMediumAsteroidSpeedBetween.x, _tweaktable.RandomMediumAsteroidSpeedBetween.y));
+			collider.Despawn();
+
+			var speed = Random.Range(_tweaktable.RandomMediumAsteroidSpeedBetween.x, _tweaktable.RandomMediumAsteroidSpeedBetween.y);
+			var pos = collider.GetPosition();
+			var dir = (pos - otherCollider.GetPosition()).normalized;
+			_entitiesManager.Spawn(_prefabAsteroidMedium, pos, dir * speed);
 		}
 
-		void OnMediumAsteroid(Vector2 position, Vector2 otherPosition)
+		void OnMediumAsteroid(EntityReference collider, EntityReference otherCollider)
 		{
-			var dir = (position - otherPosition).normalized;
-			_entitiesManager.Spawn(_prefabAsteroidSmall, position, dir * Random.Range(_tweaktable.RandomSmallAsteroidSpeedBetween.x, _tweaktable.RandomSmallAsteroidSpeedBetween.y));
+			collider.Despawn();
+
+			var speed = Random.Range(_tweaktable.RandomSmallAsteroidSpeedBetween.x, _tweaktable.RandomSmallAsteroidSpeedBetween.y);
+			var pos = collider.GetPosition();
+			var dir = (pos - otherCollider.GetPosition()).normalized;
+			_entitiesManager.Spawn(_prefabAsteroidSmall, pos, dir * speed);
 		}
 
-		void OnNoop(Vector2 position, Vector2 otherPosition)
+		void OnDespawn(EntityReference collider, EntityReference otherCollider)
+		{
+			collider.Despawn();
+		}
+
+		void OnNoop(EntityReference _, EntityReference __)
 		{
 		}
 	}
