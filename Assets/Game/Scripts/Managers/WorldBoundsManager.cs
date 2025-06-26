@@ -29,6 +29,21 @@ namespace mygame
 			);
 		}
 
+		public Vector2 GetRandomInsideBounds(float halfSize, Vector2 invalidPosition, float invalidHalfSize)
+		{
+			Vector2 pos;
+
+			do
+			{
+				pos = new Vector2(
+									Random.Range(_bounds.x + halfSize, _bounds.z - halfSize),
+									Random.Range(_bounds.y + halfSize, _bounds.w - halfSize)
+								);
+			} while ((pos - invalidPosition).sqrMagnitude < invalidHalfSize * invalidHalfSize);
+
+			return pos;
+		}
+
 		public Vector4 Bounds => _bounds;
 
 		bool CheckForScreenResolutionChange()
