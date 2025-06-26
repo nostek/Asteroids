@@ -25,11 +25,14 @@ namespace mygame
 		WindowsDatabase _windowsDatabase;
 
 		float _halfSizeBigAsteroid, _halfSizeMediumAsteroid, _halfSizeSmallAsteroid;
+		float _halfSizePlayer;
 
 		int _score = 0;
 		int _lives = 0;
 
 		int _invalidSpawnFrame = 0;
+
+		EntityReference _player;
 
 		void Awake()
 		{
@@ -55,9 +58,9 @@ namespace mygame
 			_halfSizeBigAsteroid = _prefabAsteroidBig.transform.localScale.x * .5f;
 			_halfSizeMediumAsteroid = _prefabAsteroidMedium.transform.localScale.x * .5f;
 			_halfSizeSmallAsteroid = _prefabAsteroidSmall.transform.localScale.x * .5f;
-			var halfSizeMissile = _prefabMissile.transform.localScale.x * .5f;
-			var halfSizePlayer = _prefabPlayer.transform.localScale.x * .5f;
+			_halfSizePlayer = _prefabPlayer.transform.localScale.x * .5f;
 			var halfSizePlayerSpawn = _prefabPlayerSpawn.transform.localScale.x * .5f;
+			var halfSizeMissile = _prefabMissile.transform.localScale.x * .5f;
 
 			_lives = _tweaktable.PlayerLives;
 			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
@@ -66,7 +69,7 @@ namespace mygame
 			_entitiesManager.RegisterEntity(GameEntities.AsteroidMedium, _prefabAsteroidMedium, _halfSizeMediumAsteroid);
 			_entitiesManager.RegisterEntity(GameEntities.AsteroidSmall, _prefabAsteroidSmall, _halfSizeSmallAsteroid);
 			_entitiesManager.RegisterEntity(GameEntities.Missile, _prefabMissile, halfSizeMissile);
-			_entitiesManager.RegisterEntity(GameEntities.Player, _prefabPlayer, halfSizePlayer, ensureCapacity: 1); //Only want one of these
+			_entitiesManager.RegisterEntity(GameEntities.Player, _prefabPlayer, _halfSizePlayer, ensureCapacity: 1); //Only want one of these
 			_entitiesManager.RegisterEntity(GameEntities.PlayerSpawn, _prefabPlayerSpawn, halfSizePlayerSpawn, ensureCapacity: 1); //Only want one of these
 
 			_entitiesManager.RegisterEntityLifetime(GameEntities.Missile, _tweaktable.MissilesSecondsToLive);
@@ -132,13 +135,14 @@ namespace mygame
 		void SpawnPlayer()
 		{
 			// Spawn the player at the center of the world bounds
-			var entity = _entitiesManager.Spawn(GameEntities.Player, Vector2.zero, Vector2.zero).ToPermanent(); //Use ToPermanent(). Slower access, but a stable index.
-			entity.GetGameObject().GetComponent<Player>().Entity = entity;
+			_player = _entitiesManager.Spawn(GameEntities.Player, Vector2.zero, Vector2.zero).ToPermanent(); //Use ToPermanent(). Slower access, but a stable index.
+			_player.GetGameObject().GetComponent<Player>().Entity = _player;
 		}
 
 		void OnPlayerHit(EntityReference player, EntityReference asteroid)
 		{
 			player.Despawn();
+			_player = default;
 
 			Log.D("We died");
 
