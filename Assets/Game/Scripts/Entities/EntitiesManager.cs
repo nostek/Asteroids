@@ -33,6 +33,14 @@ namespace mygame
 
 		readonly List<SolverData> _collisionSolvers = new();
 
+		class LifeTimeData
+		{
+			public EntityPool Pool;
+			public float SecondsToLive;
+		}
+
+		readonly List<LifeTimeData> _lifeTimes = new();
+
 		WorldBoundsManager _worldBoundsManager;
 
 		void Awake()
@@ -61,6 +69,18 @@ namespace mygame
 			Assert.IsFalse(_entityPools.ContainsKey(prefab), "Entity prefab is already registered: " + prefab.name);
 
 			_entityPools.Add(prefab, new EntityData() { Pool = new EntityPool(prefab, ensureCapacity) });
+		}
+
+		public void RegisterEntityLifetime(GameObject prefab, float secondsToLive)
+		{
+			Assert.IsNotNull(prefab, "Prefab cant be null");
+			Assert.IsTrue(_entityPools.ContainsKey(prefab), "Entity prefab is not registered: " + prefab.name);
+
+			_lifeTimes.Add(new LifeTimeData()
+			{
+				Pool = _entityPools[prefab].Pool,
+				SecondsToLive = secondsToLive
+			});
 		}
 
 		public void RegisterCollisionSolver(GameObject prefab, CollisionSolverDelegate solver)
@@ -114,6 +134,11 @@ namespace mygame
 				else
 					IterateOverAndDispose(data.Collisions, data.PoolA, data.SolverA, data.PoolB, data.SolverB);
 			}
+
+			//Iterate over all entities that has a lifetime
+			//Run this before we flush despawned entries
+			foreach (var data in _lifeTimes)
+				data.Pool.DespawnOlderThan(data.SecondsToLive);
 
 			//Free all the entities here so nothing is dependent on its values
 			foreach (var data in _entityPools.Values)

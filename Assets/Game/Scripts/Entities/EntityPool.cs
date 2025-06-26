@@ -20,6 +20,7 @@ namespace mygame
 		Transform[] _objects;
 		NativeArray<float2> _objectPositionsArray;
 		NativeArray<float2> _objectDirectionAndSpeedArray;
+		NativeArray<float> _objectLifetime;
 		TransformAccessArray _transformAccessArray;
 
 		Transform _parent;
@@ -38,8 +39,9 @@ namespace mygame
 
 		public void Dispose()
 		{
-			if (_objectDirectionAndSpeedArray.IsCreated) _objectDirectionAndSpeedArray.Dispose();
 			if (_objectPositionsArray.IsCreated) _objectPositionsArray.Dispose();
+			if (_objectDirectionAndSpeedArray.IsCreated) _objectDirectionAndSpeedArray.Dispose();
+			if (_objectLifetime.IsCreated) _objectLifetime.Dispose();
 			if (_transformAccessArray.isCreated) _transformAccessArray.Dispose();
 
 			if (_parent != null)
@@ -55,6 +57,7 @@ namespace mygame
 
 			_objectPositionsArray[index] = position;
 			_objectDirectionAndSpeedArray[index] = directionWithSpeed;
+			_objectLifetime[index] = Time.time;
 
 			var obj = _objects[index];
 			obj.SetLocalPositionAndRotation(position, Quaternion.LookRotation(Vector3.forward, directionWithSpeed.normalized));
@@ -80,6 +83,15 @@ namespace mygame
 
 			if (!_freeIndices.Contains(index))
 				_freeIndices.Add(index);
+		}
+
+		public void DespawnOlderThan(float seconds)
+		{
+			var expirationTime = Time.time - seconds;
+
+			for (int i = 0; i < _active; i++)
+				if (_objectLifetime[i] < expirationTime)
+					Despawn(i);
 		}
 
 		public int FindIndex(Transform transform)
@@ -137,6 +149,7 @@ namespace mygame
 
 			_objectPositionsArray[index] = _objectPositionsArray[_active - 1]; // Just copy the values from the active element, as the current index data can be discarded
 			_objectDirectionAndSpeedArray[index] = _objectDirectionAndSpeedArray[_active - 1];
+			_objectLifetime[index] = _objectLifetime[_active - 1];
 
 			(_objects[index], _objects[_active - 1]) = (_objects[_active - 1], _objects[index]); // Swap the objects in the array
 
@@ -160,6 +173,7 @@ namespace mygame
 
 			_objectPositionsArray = CreateOrScaleArray(_objectPositionsArray, capacity);
 			_objectDirectionAndSpeedArray = CreateOrScaleArray(_objectDirectionAndSpeedArray, capacity);
+			_objectLifetime = CreateOrScaleArray(_objectLifetime, capacity);
 
 			static NativeArray<T> CreateOrScaleArray<T>(NativeArray<T> current, int capacity) where T : struct
 			{
