@@ -82,6 +82,13 @@ namespace mygame
 				_freeIndices.Add(index);
 		}
 
+		public int FindIndex(Transform transform)
+		{
+			var index = System.Array.IndexOf(_objects, transform, 0, _active);
+			Assert.IsTrue(index >= 0, "Object not found in the pool.");
+			return index;
+		}
+
 		public GameObject GetGameObjectAtIndex(int index)
 		{
 			Assert.IsTrue(index >= 0 && index < _objectPositionsArray.Length, "Index out of bounds for object positions.");

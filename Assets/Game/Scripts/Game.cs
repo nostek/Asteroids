@@ -96,8 +96,7 @@ namespace mygame
 		void SpawnPlayer()
 		{
 			// Spawn the player at the center of the world bounds
-			//TODO: EntityReference index is not stable. It can be invalid after flushing despawned entities
-			var entity = _entitiesManager.Spawn(_prefabPlayer, Vector2.zero, Vector2.zero);
+			var entity = _entitiesManager.Spawn(_prefabPlayer, Vector2.zero, Vector2.zero).ToPermanent(); //Use ToPermanent(). Slower access, but a stable index.
 			entity.GetGameObject().GetComponent<Player>().Entity = entity;
 		}
 
