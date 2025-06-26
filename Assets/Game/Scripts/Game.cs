@@ -58,6 +58,8 @@ namespace mygame
 			_entitiesManager.RegisterEntity(_prefabMissile);
 			_entitiesManager.RegisterEntity(_prefabPlayer, ensureCapacity: 1); //Only want one of these
 
+			_entitiesManager.RegisterEntityLifetime(_prefabMissile, _tweaktable.MissilesSecondsToLive);
+
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidBig, OnBigAsteroid); //Makes two medium
 			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid); //Makes two small
 			/*_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnDespawn);*/ //Do not collide
