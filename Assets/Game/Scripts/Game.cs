@@ -5,7 +5,6 @@ using UnityServiceLocator;
 
 namespace mygame
 {
-	[DefaultExecutionOrder(-1)] //We want the setup to run before any other scripts
 	public class Game : MonoBehaviour
 	{
 		[Header("Prefabs Asteroids")]
@@ -34,8 +33,6 @@ namespace mygame
 
 		void Awake()
 		{
-			GetComponent<ServiceBehaviour>().Install();
-
 			ServiceLocator.Lookup
 				.Get(out _worldBoundsManager)
 				.Get(out _entitiesManager)
