@@ -20,7 +20,10 @@ namespace mygame
 
 		WorldBoundsManager _worldBoundsManager;
 		EntitiesManager _entitiesManager;
+		WindowsManager _windowsManager;
+
 		Tweaktable _tweaktable;
+		WindowsDatabase _windowsDatabase;
 
 		float _halfSizeBigAsteroid, _halfSizeMediumAsteroid, _halfSizeSmallAsteroid;
 
@@ -36,7 +39,9 @@ namespace mygame
 			ServiceLocator.Lookup
 				.Get(out _worldBoundsManager)
 				.Get(out _entitiesManager)
+				.Get(out _windowsManager)
 				.Get(out _tweaktable)
+				.Get(out _windowsDatabase)
 				.Done();
 
 			Assert.IsNotNull(_prefabAsteroidBig, "Prefab object is not assigned. Please assign a prefab in the inspector.");
@@ -138,6 +143,13 @@ namespace mygame
 
 			if (_lives > 0)
 				_ = TrySpawnPlayerAsync(1f); //_ = to suppress async warning
+			else
+				OnGameOver();
+		}
+
+		void OnGameOver()
+		{
+			_windowsManager.OpenWindow(_windowsDatabase.WindowGameOver);
 		}
 
 		#endregion
