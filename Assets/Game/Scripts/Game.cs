@@ -52,32 +52,32 @@ namespace mygame
 			_lives = _tweaktable.PlayerLives;
 			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
 
-			_entitiesManager.RegisterEntity(_prefabAsteroidBig);
-			_entitiesManager.RegisterEntity(_prefabAsteroidMedium);
-			_entitiesManager.RegisterEntity(_prefabAsteroidSmall);
-			_entitiesManager.RegisterEntity(_prefabMissile);
-			_entitiesManager.RegisterEntity(_prefabPlayer, ensureCapacity: 1); //Only want one of these
+			_entitiesManager.RegisterEntity(GameEntities.AsteroidBig, _prefabAsteroidBig);
+			_entitiesManager.RegisterEntity(GameEntities.AsteroidMedium, _prefabAsteroidMedium);
+			_entitiesManager.RegisterEntity(GameEntities.AsteroidSmall, _prefabAsteroidSmall);
+			_entitiesManager.RegisterEntity(GameEntities.Missile, _prefabMissile);
+			_entitiesManager.RegisterEntity(GameEntities.Player, _prefabPlayer, ensureCapacity: 1); //Only want one of these
 
-			_entitiesManager.RegisterEntityLifetime(_prefabMissile, _tweaktable.MissilesSecondsToLive);
+			_entitiesManager.RegisterEntityLifetime(GameEntities.Missile, _tweaktable.MissilesSecondsToLive);
 
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidBig, OnBigAsteroid); //Makes two medium
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid); //Makes two small
-			/*_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnDespawn);*/ //Do not collide
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid, _prefabAsteroidBig, OnBigAsteroid); //Medium turns to small and Big turns to medium
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnInvertDirection, _prefabAsteroidMedium, OnMediumAsteroid); //Small moves in opposite direction and Medium turns to small
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnInvertDirection, _prefabAsteroidBig, OnBigAsteroid); //Small moves in opposite direction and Big turns to medium
+			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidBig, OnBigAsteroid); //Makes two medium
+			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidMedium, OnMediumAsteroid); //Makes two small
+			/*_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnDespawn);*/ //Do not collide
+			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidMedium, OnMediumAsteroid, GameEntities.AsteroidBig, OnBigAsteroid); //Medium turns to small and Big turns to medium
+			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidMedium, OnMediumAsteroid); //Small moves in opposite direction and Medium turns to small
+			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidBig, OnBigAsteroid); //Small moves in opposite direction and Big turns to medium
 
-			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileBigAsteroid, _prefabAsteroidBig, OnNoop);
-			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileMediumAsteroid, _prefabAsteroidMedium, OnNoop);
-			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileSmallAsteroid, _prefabAsteroidSmall, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileBigAsteroid, GameEntities.AsteroidBig, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileMediumAsteroid, GameEntities.AsteroidMedium, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileSmallAsteroid, GameEntities.AsteroidSmall, OnNoop);
 
-			_entitiesManager.RegisterCollisionSolver(_prefabPlayer, OnPlayerHit, _prefabAsteroidBig, OnNoop);
-			_entitiesManager.RegisterCollisionSolver(_prefabPlayer, OnPlayerHit, _prefabAsteroidMedium, OnNoop);
-			_entitiesManager.RegisterCollisionSolver(_prefabPlayer, OnPlayerHit, _prefabAsteroidSmall, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidBig, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidMedium, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidSmall, OnNoop);
 
 			for (int i = 0; i < 3; i++)
 				_entitiesManager.Spawn(
-					_prefabAsteroidBig,
+					GameEntities.AsteroidBig,
 					_worldBoundsManager.GetRandomInsideBounds(_halfScaleBigAsteroid), //Assuming its uniform scale
 					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
@@ -98,7 +98,7 @@ namespace mygame
 		void SpawnPlayer()
 		{
 			// Spawn the player at the center of the world bounds
-			var entity = _entitiesManager.Spawn(_prefabPlayer, Vector2.zero, Vector2.zero).ToPermanent(); //Use ToPermanent(). Slower access, but a stable index.
+			var entity = _entitiesManager.Spawn(GameEntities.Player, Vector2.zero, Vector2.zero).ToPermanent(); //Use ToPermanent(). Slower access, but a stable index.
 			entity.GetGameObject().GetComponent<Player>().Entity = entity;
 		}
 
@@ -128,8 +128,8 @@ namespace mygame
 
 			var speed = Random.Range(_tweaktable.RandomMediumAsteroidSpeedBetween.x, _tweaktable.RandomMediumAsteroidSpeedBetween.y);
 
-			_entitiesManager.Spawn(_prefabAsteroidMedium, posOther + (Vector2)right * _halfScaleMediumAsteroid, right * speed);
-			_entitiesManager.Spawn(_prefabAsteroidMedium, posOther - (Vector2)right * _halfScaleMediumAsteroid, -right * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidMedium, posOther + (Vector2)right * _halfScaleMediumAsteroid, right * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidMedium, posOther - (Vector2)right * _halfScaleMediumAsteroid, -right * speed);
 
 			_score += _tweaktable.PointsForBigAsteroid;
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForBigAsteroid, _score));
@@ -148,8 +148,8 @@ namespace mygame
 
 			var speed = Random.Range(_tweaktable.RandomSmallAsteroidSpeedBetween.x, _tweaktable.RandomSmallAsteroidSpeedBetween.y);
 
-			_entitiesManager.Spawn(_prefabAsteroidSmall, posOther + (Vector2)right * _halfScaleSmallAsteroid, right * speed);
-			_entitiesManager.Spawn(_prefabAsteroidSmall, posOther - (Vector2)right * _halfScaleSmallAsteroid, -right * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidSmall, posOther + (Vector2)right * _halfScaleSmallAsteroid, right * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidSmall, posOther - (Vector2)right * _halfScaleSmallAsteroid, -right * speed);
 
 			_score += _tweaktable.PointsForMediumAsteroid;
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForMediumAsteroid, _score));
@@ -171,7 +171,7 @@ namespace mygame
 			var speed = Random.Range(_tweaktable.RandomMediumAsteroidSpeedBetween.x, _tweaktable.RandomMediumAsteroidSpeedBetween.y);
 			var pos = collider.GetPosition();
 			var dir = (pos - otherCollider.GetPosition()).normalized;
-			_entitiesManager.Spawn(_prefabAsteroidMedium, pos, dir * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidMedium, pos, dir * speed);
 		}
 
 		void OnMediumAsteroid(EntityReference collider, EntityReference otherCollider)
@@ -181,7 +181,7 @@ namespace mygame
 			var speed = Random.Range(_tweaktable.RandomSmallAsteroidSpeedBetween.x, _tweaktable.RandomSmallAsteroidSpeedBetween.y);
 			var pos = collider.GetPosition();
 			var dir = (pos - otherCollider.GetPosition()).normalized;
-			_entitiesManager.Spawn(_prefabAsteroidSmall, pos, dir * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidSmall, pos, dir * speed);
 		}
 
 		void OnInvertDirection(EntityReference collider, EntityReference otherCollider)

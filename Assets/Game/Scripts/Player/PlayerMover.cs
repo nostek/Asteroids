@@ -12,9 +12,6 @@ namespace mygame
 		[SerializeField] float _maxSpeed = 2f;
 		[SerializeField] float _breakSpeed = 1f;
 
-		[Header("Prefabs")]
-		[SerializeField] GameObject _prefabMissile;
-
 		Transform _transform;
 		Player _player;
 		PlayerInput _input;
@@ -24,8 +21,6 @@ namespace mygame
 
 		void Awake()
 		{
-			Assert.IsNotNull(_prefabMissile, "Prefab object is not assigned. Please assign a prefab in the inspector.");
-
 			_transform = GetComponent<Transform>();
 
 			_player = GetComponent<Player>();
@@ -48,7 +43,7 @@ namespace mygame
 			Vector2 fwd = rot * Vector3.up; //Implicit conversion to Vector2
 
 			if (_input.UseShouldFire())
-				_entitiesManager.Spawn(_prefabMissile, pos, fwd * _tweaktable.MissileSpeed);
+				_entitiesManager.Spawn(GameEntities.Missile, pos, fwd * _tweaktable.MissileSpeed);
 
 			if (_input.IsThrusting)
 			{
