@@ -19,6 +19,7 @@ namespace mygame
 		PlayerInput _input;
 
 		EntitiesManager _entitiesManager;
+		Tweaktable _tweaktable;
 
 		Vector3 _moveDirection = Vector3.zero;
 
@@ -33,6 +34,7 @@ namespace mygame
 
 			ServiceLocator.Lookup
 				.Get(out _entitiesManager)
+				.Get(out _tweaktable)
 				.Done();
 		}
 
@@ -44,7 +46,7 @@ namespace mygame
 			var fwd = rot * Vector3.up;
 
 			if (_input.UseShouldFire())
-				_entitiesManager.Spawn(_prefabMissile, pos, fwd * 10f);
+				_entitiesManager.Spawn(_prefabMissile, pos, fwd * _tweaktable.MissileSpeed);
 
 			if (_input.IsThrusting)
 			{
