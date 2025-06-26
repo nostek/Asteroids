@@ -94,6 +94,12 @@ namespace mygame
 			return _objectPositionsArray[index];
 		}
 
+		public Vector2 GetDirectionAndSpeedAtIndex(int index)
+		{
+			Assert.IsTrue(index >= 0 && index < _objectPositionsArray.Length, "Index out of bounds for object positions.");
+			return _objectDirectionAndSpeedArray[index];
+		}
+
 		public void SetDirectionAndSpeedAtIndex(int index, Vector2 directionAndSpeed)
 		{
 			Assert.IsTrue(index >= 0 && index < _objectPositionsArray.Length, "Index out of bounds for object positions.");

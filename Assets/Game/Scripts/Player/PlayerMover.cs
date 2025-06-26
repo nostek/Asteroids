@@ -22,8 +22,6 @@ namespace mygame
 		EntitiesManager _entitiesManager;
 		Tweaktable _tweaktable;
 
-		Vector3 _moveDirection = Vector3.zero;
-
 		void Awake()
 		{
 			Assert.IsNotNull(_prefabMissile, "Prefab object is not assigned. Please assign a prefab in the inspector.");
@@ -47,28 +45,32 @@ namespace mygame
 			var dt = Time.deltaTime;
 
 			_transform.GetLocalPositionAndRotation(out var pos, out var rot);
-			var fwd = rot * Vector3.up;
+			Vector2 fwd = rot * Vector3.up; //Implicit conversion to Vector2
 
 			if (_input.UseShouldFire())
 				_entitiesManager.Spawn(_prefabMissile, pos, fwd * _tweaktable.MissileSpeed);
 
 			if (_input.IsThrusting)
 			{
-				//add forward momentum but clamp it at _maxSpeed
-				_moveDirection = Vector3.ClampMagnitude(_moveDirection + _thrustSpeed * dt * fwd, _maxSpeed);
+				var moveDirection = _player.Entity.GetDirectionAndSpeed();
 
-				_player.Entity.SetDirectionAndSpeed(_moveDirection);
+				//add forward momentum but clamp it at _maxSpeed
+				moveDirection = Vector2.ClampMagnitude(moveDirection + _thrustSpeed * dt * fwd, _maxSpeed);
+
+				_player.Entity.SetDirectionAndSpeed(moveDirection);
 			}
 			else if (_input.IsBreaking)
 			{
+				var moveDirection = _player.Entity.GetDirectionAndSpeed();
+
 				//since magnitude cant be negative, we calculate the magnitude of the forward movementum
 				//and decrease that, clamping at 0, then scale the normalized forward magnitude with the
 				//new speed
-				var speed = _moveDirection.magnitude;
+				var speed = moveDirection.magnitude;
 				speed = Mathf.Max(0f, speed - _breakSpeed * dt);
-				_moveDirection = _moveDirection.normalized * speed;
+				moveDirection = moveDirection.normalized * speed;
 
-				_player.Entity.SetDirectionAndSpeed(_moveDirection);
+				_player.Entity.SetDirectionAndSpeed(moveDirection);
 			}
 
 			//pos += _moveDirection * dt;
