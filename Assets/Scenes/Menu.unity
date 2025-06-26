@@ -892,6 +892,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _textLastScore: {fileID: 42576511}
+  _sceneGame:
+    m_AssetGUID: 8c9cfa26abfee488c85f1582747f6a02
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
