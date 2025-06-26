@@ -9,7 +9,7 @@ namespace mygame
 {
 	public class EntitiesManager : MonoBehaviour
 	{
-		public delegate void CollisionSolverDelegate(Vector2 position, Vector2 otherPosition);
+		public delegate void CollisionSolverDelegate(EntityReference collider, EntityReference otherCollider);
 
 		class EntityData
 		{
@@ -65,6 +65,7 @@ namespace mygame
 		public void RegisterCollisionSolver(GameObject prefab, CollisionSolverDelegate solver)
 		{
 			Assert.IsTrue(_entityPools.ContainsKey(prefab), "Entity prefab is not registered: " + prefab.name);
+			Assert.IsNotNull(solver, "Solver cant be null.");
 
 			_collisionSolvers.Add(new SolverData()
 			{
@@ -79,6 +80,8 @@ namespace mygame
 		{
 			Assert.IsTrue(_entityPools.ContainsKey(prefabA), "Entity prefab is not registered: " + prefabA.name);
 			Assert.IsTrue(_entityPools.ContainsKey(prefabB), "Entity prefab is not registered: " + prefabB.name);
+			Assert.IsNotNull(solverA, "Solver cant be null.");
+			Assert.IsNotNull(solverB, "Solver cant be null.");
 
 			_collisionSolvers.Add(new SolverData()
 			{
@@ -137,12 +140,7 @@ namespace mygame
 				{
 					var otherIndex = collisions[i] - 1; // Convert to 0-based index
 
-					var posA = pool.GetPositionAtIndex(i);
-					var posB = pool.GetPositionAtIndex(otherIndex);
-
-					pool.Despawn(i);
-
-					onCollision(posA, posB);
+					onCollision(new(pool, i), new(pool, otherIndex));
 				}
 
 			collisions.Dispose();
@@ -158,14 +156,8 @@ namespace mygame
 				{
 					var otherIndex = collisions[i] - 1; // Convert to 0-based index
 
-					var posA = poolA.GetPositionAtIndex(i);
-					var posB = poolB.GetPositionAtIndex(otherIndex);
-
-					poolA.Despawn(i);
-					poolB.Despawn(otherIndex);
-
-					onCollisionA(posA, posB);
-					onCollisionB(posB, posA);
+					onCollisionA(new(poolA, i), new(poolB, otherIndex));
+					onCollisionB(new(poolB, otherIndex), new(poolA, i));
 				}
 
 			collisions.Dispose();
