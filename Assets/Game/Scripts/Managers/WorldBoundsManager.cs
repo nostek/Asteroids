@@ -7,17 +7,18 @@ namespace mygame
 	{
 		Vector4 _bounds;
 
+		Vector2 _screenSize = Vector2.zero;
+
 		void Awake()
 		{
-			var cam = Camera.main;
-			Assert.IsNotNull(cam, "Main camera not found. Please ensure a camera is present in the scene.");
+			if (CheckForScreenResolutionChange())
+				RefreshBounds();
+		}
 
-			_bounds = new Vector4(
-				-cam.orthographicSize * cam.aspect,
-				-cam.orthographicSize,
-				cam.orthographicSize * cam.aspect,
-				cam.orthographicSize
-			);
+		void Update()
+		{
+			if (CheckForScreenResolutionChange())
+				RefreshBounds();
 		}
 
 		public Vector2 GetRandomInsideBounds(float halfSize)
@@ -29,5 +30,29 @@ namespace mygame
 		}
 
 		public Vector4 Bounds => _bounds;
+
+		bool CheckForScreenResolutionChange()
+		{
+			var size = new Vector2(Screen.width, Screen.height);
+
+			if (_screenSize == size)
+				return false;
+
+			_screenSize = size;
+			return true;
+		}
+
+		void RefreshBounds()
+		{
+			var cam = Camera.main;
+			Assert.IsNotNull(cam, "Main camera not found. Please ensure a camera is present in the scene.");
+
+			_bounds = new Vector4(
+				-cam.orthographicSize * cam.aspect,
+				-cam.orthographicSize,
+				cam.orthographicSize * cam.aspect,
+				cam.orthographicSize
+			);
+		}
 	}
 }
