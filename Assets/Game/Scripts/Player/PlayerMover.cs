@@ -4,61 +4,67 @@ using UnityServiceLocator;
 
 namespace mygame
 {
-    public class PlayerMover : MonoBehaviour
-    {
-	    [Header("Settings")]
-	    [SerializeField] float _rotationSpeed = 180f; // Degrees per second
-	    [SerializeField] float _thrustSpeed = 1f;
-	    [SerializeField] float _maxSpeed = 2f;
-	    [SerializeField] float _breakSpeed = 1f;
+	public class PlayerMover : MonoBehaviour
+	{
+		[Header("Settings")]
+		[SerializeField] float _rotationSpeed = 180f; // Degrees per second
+		[SerializeField] float _thrustSpeed = 1f;
+		[SerializeField] float _maxSpeed = 2f;
+		[SerializeField] float _breakSpeed = 1f;
 
-	    [Header("Prefabs")]
-	    [SerializeField] GameObject _prefabMissile;
+		[Header("Prefabs")]
+		[SerializeField] GameObject _prefabMissile;
 
-	    Transform _transform;
-	    PlayerInput _input;
+		Transform _transform;
+		PlayerInput _input;
 
-	    EntitiesManager _entitiesManager;
+		EntitiesManager _entitiesManager;
 
-	    float _moveSpeed = 0f;
+		Vector3 _moveDirection = Vector3.zero;
 
-	    void Awake()
-	    {
-		    Assert.IsNotNull(_prefabMissile, "Prefab object is not assigned. Please assign a prefab in the inspector.");
+		void Awake()
+		{
+			Assert.IsNotNull(_prefabMissile, "Prefab object is not assigned. Please assign a prefab in the inspector.");
 
-		    _transform = GetComponent<Transform>();
+			_transform = GetComponent<Transform>();
 
-		    _input = GetComponent<PlayerInput>();
-		    Assert.IsNotNull(_input, "PlayerInput could not be found.");
+			_input = GetComponent<PlayerInput>();
+			Assert.IsNotNull(_input, "PlayerInput could not be found.");
 
-		    ServiceLocator.Lookup
-			    .Get(out _entitiesManager)
-			    .Done();
-	    }
+			ServiceLocator.Lookup
+				.Get(out _entitiesManager)
+				.Done();
+		}
 
-	    void Update()
-	    {
-		    var dt = Time.deltaTime;
+		void Update()
+		{
+			var dt = Time.deltaTime;
 
-		    _transform.GetLocalPositionAndRotation(out var pos, out var rot);
-		    var fwd = _transform.up;
+			_transform.GetLocalPositionAndRotation(out var pos, out var rot);
+			var fwd = rot * Vector3.up;
 
-		    if (_input.UseShouldFire())
-			    _entitiesManager.Spawn(_prefabMissile, pos, fwd * 10f);
+			if (_input.UseShouldFire())
+				_entitiesManager.Spawn(_prefabMissile, pos, fwd * 10f);
 
-		    if (_input.IsThrusting)
-		    {
-			    _moveSpeed = Mathf.Min(_maxSpeed, _moveSpeed + _thrustSpeed * dt);
-		    }
-		    else if (_input.IsBreaking)
-		    {
-			    _moveSpeed = Mathf.Max(0f, _moveSpeed - _breakSpeed * dt);
-		    }
+			if (_input.IsThrusting)
+			{
+				//add forward momentum but clamp it at _maxSpeed
+				_moveDirection = Vector3.ClampMagnitude(_moveDirection + _thrustSpeed * dt * fwd, _maxSpeed);
+			}
+			else if (_input.IsBreaking)
+			{
+				//since magnitude cant be negative, we calculate the magnitude of the forward movementum
+				//and decrease that, clamping at 0, then scale the normalized forward magnitude with the
+				//new speed
+				var speed = _moveDirection.magnitude;
+				speed = Mathf.Max(0f, speed - _breakSpeed * dt);
+				_moveDirection = _moveDirection.normalized * speed;
+			}
 
-		    pos += _moveSpeed * dt * fwd;
-		    rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _rotationSpeed * dt * -1f);
+			pos += _moveDirection * dt;
+			rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _rotationSpeed * dt * -1f);
 
-		    _transform.SetLocalPositionAndRotation(pos, rot);
-	    }
-    }
+			_transform.SetLocalPositionAndRotation(pos, rot);
+		}
+	}
 }
