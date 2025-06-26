@@ -97,7 +97,7 @@ namespace mygame
 					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
 
-			SpawnPlayer();
+			_ = TrySpawnPlayerAsync(0f); //_ = to suppress async warning
 		}
 
 		#region PLAYER
