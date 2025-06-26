@@ -30,6 +30,9 @@ namespace mygame
 
 		void Update()
 		{
+			if (_input.DoFire)
+				_soundsDatabase.PlayFireMissile();
+
 			if (_input.IsThrusting)
 			{
 				if (_thrust == null)
