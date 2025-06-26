@@ -16,3 +16,7 @@ MonoBehaviour:
   _randomMediumAsteroidSpeedBetween: {x: 1, y: 2}
   _randomSmallAsteroidSpeedBetween: {x: 2, y: 4}
   _missileSpeed: 10
+  _pointsForBigAsteroid: 20
+  _pointsForMediumAsteroid: 50
+  _pointsForSmallAsteroid: 100
+  _playerLives: 3
