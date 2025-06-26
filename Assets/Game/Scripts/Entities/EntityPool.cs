@@ -80,10 +80,22 @@ namespace mygame
 				_freeIndices.Add(index);
 		}
 
+		public GameObject GetGameObjectAtIndex(int index)
+		{
+			Assert.IsTrue(index >= 0 && index < _objectPositionsArray.Length, "Index out of bounds for object positions.");
+			return _objects[index].gameObject;
+		}
+
 		public Vector2 GetPositionAtIndex(int index)
 		{
 			Assert.IsTrue(index >= 0 && index < _objectPositionsArray.Length, "Index out of bounds for object positions.");
 			return _objectPositionsArray[index];
+		}
+
+		public void SetDirectionAndSpeedAtIndex(int index, Vector2 directionAndSpeed)
+		{
+			Assert.IsTrue(index >= 0 && index < _objectPositionsArray.Length, "Index out of bounds for object positions.");
+			_objectDirectionAndSpeedArray[index] = directionAndSpeed;
 		}
 
 		public void FlushFreeIndices()
