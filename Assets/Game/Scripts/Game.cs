@@ -23,6 +23,8 @@ namespace mygame
 
 		float _halfScaleBigAsteroid, _halfScaleMediumAsteroid, _halfScaleSmallAsteroid;
 
+		int _score = 0;
+
 		void Awake()
 		{
 			GetComponent<ServiceBehaviour>().Install();
@@ -119,7 +121,8 @@ namespace mygame
 			_entitiesManager.Spawn(_prefabAsteroidMedium, posOther + (Vector2)right * _halfScaleMediumAsteroid, right * speed);
 			_entitiesManager.Spawn(_prefabAsteroidMedium, posOther - (Vector2)right * _halfScaleMediumAsteroid, -right * speed);
 
-			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForBigAsteroid));
+			_score += _tweaktable.PointsForBigAsteroid;
+			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForBigAsteroid, _score));
 		}
 
 		void OnMissileMediumAsteroid(EntityReference missile, EntityReference asteroid)
@@ -138,14 +141,17 @@ namespace mygame
 			_entitiesManager.Spawn(_prefabAsteroidSmall, posOther + (Vector2)right * _halfScaleSmallAsteroid, right * speed);
 			_entitiesManager.Spawn(_prefabAsteroidSmall, posOther - (Vector2)right * _halfScaleSmallAsteroid, -right * speed);
 
-			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForMediumAsteroid));
+			_score += _tweaktable.PointsForMediumAsteroid;
+			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForMediumAsteroid, _score));
 		}
 
 		void OnMissileSmallAsteroid(EntityReference missile, EntityReference asteroid)
 		{
 			missile.Despawn();
 			asteroid.Despawn();
-			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForSmallAsteroid));
+
+			_score += _tweaktable.PointsForSmallAsteroid;
+			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForSmallAsteroid, _score));
 		}
 
 		void OnBigAsteroid(EntityReference collider, EntityReference otherCollider)

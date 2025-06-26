@@ -2,12 +2,13 @@ using UnityEventsCenter;
 
 namespace mygame
 {
-    public static class GameEvents
-    {
-	    public readonly struct AddPointsEvent : IEvent
-	    {
-		    public AddPointsEvent(int points) => Points = points;
-		    public readonly int Points;
-	    }
-    }
+	public static class GameEvents
+	{
+		public readonly struct AddPointsEvent : IEvent
+		{
+			public AddPointsEvent(int addedPoints, int totalPoints) => (AddedPoints, TotalPoints) = (addedPoints, totalPoints);
+			public readonly int AddedPoints;
+			public readonly int TotalPoints;
+		}
+	}
 }

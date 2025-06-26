@@ -5,31 +5,28 @@ using UnityEventsCenter;
 namespace mygame
 {
 	[RequireComponent(typeof(TextMeshProUGUI))]
-    public class UITextPoints : MonoBehaviour
-    {
-	    TextMeshProUGUI _text;
+	public class UITextPoints : MonoBehaviour
+	{
+		TextMeshProUGUI _text;
 
-	    int _points = 0;
+		void Awake()
+		{
+			_text = gameObject.GetComponent<TextMeshProUGUI>();
+			RefreshText(0);
 
-	    void Awake()
-	    {
-		    _text = gameObject.GetComponent<TextMeshProUGUI>();
-		    RefreshText();
+			EventsCenter.Subscribe<GameEvents.AddPointsEvent>(OnAddPoints);
+		}
 
-		    EventsCenter.Subscribe<GameEvents.AddPointsEvent>(OnAddPoints);
-	    }
+		void OnDestroy()
+		{
+			EventsCenter.Unsubscribe<GameEvents.AddPointsEvent>(OnAddPoints);
+		}
 
-	    void OnDestroy()
-	    {
-		    EventsCenter.Unsubscribe<GameEvents.AddPointsEvent>(OnAddPoints);
-	    }
+		void OnAddPoints(GameEvents.AddPointsEvent ev)
+		{
+			RefreshText(ev.TotalPoints);
+		}
 
-	    void OnAddPoints(GameEvents.AddPointsEvent ev)
-	    {
-		    _points += ev.Points;
-		    RefreshText();
-	    }
-
-	    void RefreshText() => _text.text = $"Points: {_points}";
-    }
+		void RefreshText(int points) => _text.text = $"Points: {points}";
+	}
 }
