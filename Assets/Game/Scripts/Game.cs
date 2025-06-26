@@ -74,6 +74,21 @@ namespace mygame
 					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
 
+			SpawnPlayer();
+		}
+
+		//Uses Awaitable instead of Coroutines which should not create any garbage.
+		//In production I would probably use UniTask as it currently has a lot more support.
+		async Awaitable TrySpawnPlayerAsync(float timeDelayUntilSpawn)
+		{
+			if (timeDelayUntilSpawn > 0f)
+				await Awaitable.WaitForSecondsAsync(timeDelayUntilSpawn);
+
+			SpawnPlayer();
+		}
+
+		void SpawnPlayer()
+		{
 			// Spawn the player at the center of the world bounds
 			//TODO: EntityReference index is not stable. It can be invalid after flushing despawned entities
 			var entity = _entitiesManager.Spawn(_prefabPlayer, Vector2.zero, Vector2.zero);
@@ -82,7 +97,10 @@ namespace mygame
 
 		void OnPlayerHit(EntityReference player, EntityReference asteroid)
 		{
+			player.Despawn();
 			Debug.Log("We died");
+
+			_ = TrySpawnPlayerAsync(1f); //_ = to suppress async warning
 		}
 
 		void OnMissileBigAsteroid(EntityReference missile, EntityReference asteroid)
