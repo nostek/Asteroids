@@ -17,15 +17,9 @@ namespace mygame
 			EventsCenter.Subscribe<GameEvents.AddPointsEvent>(OnAddPoints);
 		}
 
-		void OnDestroy()
-		{
-			EventsCenter.Unsubscribe<GameEvents.AddPointsEvent>(OnAddPoints);
-		}
+		void OnDestroy() => EventsCenter.Unsubscribe<GameEvents.AddPointsEvent>(OnAddPoints);
 
-		void OnAddPoints(GameEvents.AddPointsEvent ev)
-		{
-			RefreshText(ev.TotalPoints);
-		}
+		void OnAddPoints(GameEvents.AddPointsEvent ev) => RefreshText(ev.TotalPoints);
 
 		void RefreshText(int points) => _text.text = $"Points: {points}";
 	}

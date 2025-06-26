@@ -69,9 +69,9 @@ namespace mygame
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidMedium, OnMediumAsteroid); //Small moves in opposite direction and Medium turns to small
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidBig, OnBigAsteroid); //Small moves in opposite direction and Big turns to medium
 
-			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileBigAsteroid, GameEntities.AsteroidBig, OnNoop);
-			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileMediumAsteroid, GameEntities.AsteroidMedium, OnNoop);
-			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileSmallAsteroid, GameEntities.AsteroidSmall, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileVsBigAsteroid, GameEntities.AsteroidBig, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileVsMediumAsteroid, GameEntities.AsteroidMedium, OnNoop);
+			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileVsSmallAsteroid, GameEntities.AsteroidSmall, OnNoop);
 
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidBig, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidMedium, OnNoop);
@@ -86,6 +86,8 @@ namespace mygame
 
 			SpawnPlayer();
 		}
+
+		#region PLAYER
 
 		//Uses Awaitable instead of Coroutines which should not create any garbage.
 		//In production I would probably use UniTask as it currently has a lot more support.
@@ -117,7 +119,11 @@ namespace mygame
 				_ = TrySpawnPlayerAsync(1f); //_ = to suppress async warning
 		}
 
-		void OnMissileBigAsteroid(EntityReference missile, EntityReference asteroid)
+		#endregion
+
+		#region COLLISION SOLVERS
+
+		void OnMissileVsBigAsteroid(EntityReference missile, EntityReference asteroid)
 		{
 			missile.Despawn();
 			asteroid.Despawn();
@@ -137,7 +143,7 @@ namespace mygame
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForBigAsteroid, _score));
 		}
 
-		void OnMissileMediumAsteroid(EntityReference missile, EntityReference asteroid)
+		void OnMissileVsMediumAsteroid(EntityReference missile, EntityReference asteroid)
 		{
 			missile.Despawn();
 			asteroid.Despawn();
@@ -157,7 +163,7 @@ namespace mygame
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForMediumAsteroid, _score));
 		}
 
-		void OnMissileSmallAsteroid(EntityReference missile, EntityReference asteroid)
+		void OnMissileVsSmallAsteroid(EntityReference missile, EntityReference asteroid)
 		{
 			missile.Despawn();
 			asteroid.Despawn();
@@ -194,13 +200,10 @@ namespace mygame
 			collider.SetDirectionAndSpeed(dir * speed);
 		}
 
-		void OnDespawn(EntityReference collider, EntityReference _)
-		{
-			collider.Despawn();
-		}
-
 		void OnNoop(EntityReference _, EntityReference __)
 		{
 		}
+
+		#endregion
 	}
 }

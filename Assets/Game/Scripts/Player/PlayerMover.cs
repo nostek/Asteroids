@@ -68,7 +68,6 @@ namespace mygame
 				_player.Entity.SetDirectionAndSpeed(moveDirection);
 			}
 
-			//pos += _moveDirection * dt;
 			if (_rotationSpeed != 0f)
 			{
 				rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _rotationSpeed * dt * -1f);
