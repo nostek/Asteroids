@@ -149,6 +149,9 @@ namespace mygame
 
 		void OnGameOver()
 		{
+			//would use something else when saving important data. But trivial things like this PlayerPrefs is fine (except for WebGL+itch.io)
+			PlayerPrefs.SetInt(GameConstants.PlayerPrefsLastScore, _score);
+
 			_windowsManager.OpenWindow(_windowsDatabase.WindowGameOver);
 		}
 
