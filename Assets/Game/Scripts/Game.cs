@@ -58,12 +58,12 @@ namespace mygame
 			_entitiesManager.RegisterEntity(_prefabMissile);
 			_entitiesManager.RegisterEntity(_prefabPlayer, ensureCapacity: 1); //Only want one of these
 
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidBig, OnBigAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnDespawn);
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid, _prefabAsteroidBig, OnBigAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnDespawn, _prefabAsteroidMedium, OnMediumAsteroid);
-			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnDespawn, _prefabAsteroidBig, OnBigAsteroid);
+			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidBig, OnBigAsteroid); //Makes two medium
+			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid); //Makes two small
+			/*_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnDespawn);*/ //Do not collide
+			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidMedium, OnMediumAsteroid, _prefabAsteroidBig, OnBigAsteroid); //Medium turns to small and Big turns to medium
+			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnInvertDirection, _prefabAsteroidMedium, OnMediumAsteroid); //Small moves in opposite direction and Medium turns to small
+			_entitiesManager.RegisterCollisionSolver(_prefabAsteroidSmall, OnInvertDirection, _prefabAsteroidBig, OnBigAsteroid); //Small moves in opposite direction and Big turns to medium
 
 			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileBigAsteroid, _prefabAsteroidBig, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(_prefabMissile, OnMissileMediumAsteroid, _prefabAsteroidMedium, OnNoop);
@@ -183,7 +183,15 @@ namespace mygame
 			_entitiesManager.Spawn(_prefabAsteroidSmall, pos, dir * speed);
 		}
 
-		void OnDespawn(EntityReference collider, EntityReference otherCollider)
+		void OnInvertDirection(EntityReference collider, EntityReference otherCollider)
+		{
+			var speed = collider.GetDirectionAndSpeed().magnitude;
+			var pos = collider.GetPosition();
+			var dir = (pos - otherCollider.GetPosition()).normalized;
+			collider.SetDirectionAndSpeed(dir * speed);
+		}
+
+		void OnDespawn(EntityReference collider, EntityReference _)
 		{
 			collider.Despawn();
 		}
