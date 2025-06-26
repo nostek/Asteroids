@@ -21,7 +21,7 @@ namespace mygame
 		EntitiesManager _entitiesManager;
 		Tweaktable _tweaktable;
 
-		float _halfScaleBigAsteroid, _halfScaleMediumAsteroid, _halfScaleSmallAsteroid;
+		float _halfSizeBigAsteroid, _halfSizeMediumAsteroid, _halfSizeSmallAsteroid;
 
 		int _score = 0;
 		int _lives = 0;
@@ -45,18 +45,20 @@ namespace mygame
 
 		void Start()
 		{
-			_halfScaleBigAsteroid = _prefabAsteroidBig.transform.localScale.x * 0.5f;
-			_halfScaleMediumAsteroid = _prefabAsteroidMedium.transform.localScale.x * 0.5f;
-			_halfScaleSmallAsteroid = _prefabAsteroidSmall.transform.localScale.x * 0.5f;
+			_halfSizeBigAsteroid = _prefabAsteroidBig.transform.localScale.x * .5f;
+			_halfSizeMediumAsteroid = _prefabAsteroidMedium.transform.localScale.x * .5f;
+			_halfSizeSmallAsteroid = _prefabAsteroidSmall.transform.localScale.x * .5f;
+			var halfSizeMissile = _prefabMissile.transform.localScale.x * .5f;
+			var halfSizePlayer = _prefabPlayer.transform.localScale.x * .5f;
 
 			_lives = _tweaktable.PlayerLives;
 			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
 
-			_entitiesManager.RegisterEntity(GameEntities.AsteroidBig, _prefabAsteroidBig);
-			_entitiesManager.RegisterEntity(GameEntities.AsteroidMedium, _prefabAsteroidMedium);
-			_entitiesManager.RegisterEntity(GameEntities.AsteroidSmall, _prefabAsteroidSmall);
-			_entitiesManager.RegisterEntity(GameEntities.Missile, _prefabMissile);
-			_entitiesManager.RegisterEntity(GameEntities.Player, _prefabPlayer, ensureCapacity: 1); //Only want one of these
+			_entitiesManager.RegisterEntity(GameEntities.AsteroidBig, _prefabAsteroidBig, _halfSizeBigAsteroid);
+			_entitiesManager.RegisterEntity(GameEntities.AsteroidMedium, _prefabAsteroidMedium, _halfSizeMediumAsteroid);
+			_entitiesManager.RegisterEntity(GameEntities.AsteroidSmall, _prefabAsteroidSmall, _halfSizeSmallAsteroid);
+			_entitiesManager.RegisterEntity(GameEntities.Missile, _prefabMissile, halfSizeMissile);
+			_entitiesManager.RegisterEntity(GameEntities.Player, _prefabPlayer, halfSizePlayer, ensureCapacity: 1); //Only want one of these
 
 			_entitiesManager.RegisterEntityLifetime(GameEntities.Missile, _tweaktable.MissilesSecondsToLive);
 
@@ -78,7 +80,7 @@ namespace mygame
 			for (int i = 0; i < 3; i++)
 				_entitiesManager.Spawn(
 					GameEntities.AsteroidBig,
-					_worldBoundsManager.GetRandomInsideBounds(_halfScaleBigAsteroid), //Assuming its uniform scale
+					_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid), //Assuming its uniform scale
 					Random.insideUnitCircle.normalized * Random.Range(_tweaktable.RandomBigAsteroidSpeedBetween.x, _tweaktable.RandomBigAsteroidSpeedBetween.y)
 				);
 
@@ -128,8 +130,8 @@ namespace mygame
 
 			var speed = Random.Range(_tweaktable.RandomMediumAsteroidSpeedBetween.x, _tweaktable.RandomMediumAsteroidSpeedBetween.y);
 
-			_entitiesManager.Spawn(GameEntities.AsteroidMedium, posOther + (Vector2)right * _halfScaleMediumAsteroid, right * speed);
-			_entitiesManager.Spawn(GameEntities.AsteroidMedium, posOther - (Vector2)right * _halfScaleMediumAsteroid, -right * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidMedium, posOther + (Vector2)right * _halfSizeMediumAsteroid, right * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidMedium, posOther - (Vector2)right * _halfSizeMediumAsteroid, -right * speed);
 
 			_score += _tweaktable.PointsForBigAsteroid;
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForBigAsteroid, _score));
@@ -148,8 +150,8 @@ namespace mygame
 
 			var speed = Random.Range(_tweaktable.RandomSmallAsteroidSpeedBetween.x, _tweaktable.RandomSmallAsteroidSpeedBetween.y);
 
-			_entitiesManager.Spawn(GameEntities.AsteroidSmall, posOther + (Vector2)right * _halfScaleSmallAsteroid, right * speed);
-			_entitiesManager.Spawn(GameEntities.AsteroidSmall, posOther - (Vector2)right * _halfScaleSmallAsteroid, -right * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidSmall, posOther + (Vector2)right * _halfSizeSmallAsteroid, right * speed);
+			_entitiesManager.Spawn(GameEntities.AsteroidSmall, posOther - (Vector2)right * _halfSizeSmallAsteroid, -right * speed);
 
 			_score += _tweaktable.PointsForMediumAsteroid;
 			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForMediumAsteroid, _score));
