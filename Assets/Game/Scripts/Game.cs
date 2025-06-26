@@ -27,6 +27,8 @@ namespace mygame
 		float _halfSizeBigAsteroid, _halfSizeMediumAsteroid, _halfSizeSmallAsteroid;
 		float _halfSizePlayer;
 
+		float _nextSpawn = 0f;
+
 		int _score = 0;
 		int _lives = 0;
 
@@ -102,7 +104,23 @@ namespace mygame
 					Random.insideUnitCircle.normalized * _tweaktable.RandomBigAsteroidSpeedBetween
 				);
 
+			_nextSpawn = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
+
 			TrySpawnPlayerAsync(1f).SafeExecute();
+		}
+
+		void Update()
+		{
+			if (Time.time > _nextSpawn && _player.IsValid())
+			{
+				_nextSpawn = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
+
+				_entitiesManager.Spawn(
+					GameEntities.AsteroidBig,
+					_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid, _player.GetPosition(), _halfSizePlayer * 2f), // *2f so we have a little more room to move
+					Random.insideUnitCircle.normalized * _tweaktable.RandomBigAsteroidSpeedBetween
+				);
+			}
 		}
 
 		#region PLAYER
