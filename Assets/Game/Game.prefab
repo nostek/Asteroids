@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c43e45ac1f2ebb42aeea0a24f063797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  installOnAwake: 0
+  installOnAwake: 1
   installOnStart: 0
   classes: []
   monoBehaviours:
