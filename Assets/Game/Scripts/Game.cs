@@ -93,7 +93,7 @@ namespace mygame
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidMedium, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidSmall, OnNoop);
 
-			//We use the PlayerSpawn entity as a collision detector for Asteroids in the spawn area.
+			//We use the PlayerSpawn entity as a detector for Asteroids in the spawn area.
 			//It runs on the job+burst system for maximum performance.
 			_entitiesManager.RegisterCollisionSolver(GameEntities.PlayerSpawn, OnPlayerSpawnHit, GameEntities.AsteroidBig, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.PlayerSpawn, OnPlayerSpawnHit, GameEntities.AsteroidMedium, OnNoop);
