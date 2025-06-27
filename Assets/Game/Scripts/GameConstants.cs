@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace mygame
 {
 	public static class GameConstants

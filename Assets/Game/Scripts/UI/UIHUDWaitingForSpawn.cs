@@ -14,7 +14,7 @@ namespace mygame
 			canvas = GetComponent<Canvas>();
 			Assert.IsNotNull(canvas);
 
-			canvas.enabled = false; //enable and disable canvas instead of gameobject so we dont invalidate the mesh buffers
+			canvas.enabled = false; //enable and disable canvas instead of gameobject so we dont clear the mesh buffers on the gpu
 
 			EventsCenter.Subscribe<GameEvents.WaitingForSpawnEvent>(OnWaitingForSpawn);
 		}

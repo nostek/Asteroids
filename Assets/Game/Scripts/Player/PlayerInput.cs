@@ -26,23 +26,13 @@ namespace mygame
 			_input.Actions.Fire.performed += _ => _doFire = true;
 		}
 
-		void OnEnable()
-		{
-			_input.Enable();
-		}
-
-		void OnDisable()
-		{
-			_input.Disable();
-		}
-
-		void OnDestroy()
-		{
-			_input.Dispose();
-		}
+		void OnEnable() => _input.Enable();
+		void OnDisable() => _input.Disable();
+		void OnDestroy() => _input.Dispose();
 
 		void LateUpdate()
 		{
+			//clear action bools in LateUpdate(), so things that read in Update() will get the same value
 			_doFire = false;
 		}
 

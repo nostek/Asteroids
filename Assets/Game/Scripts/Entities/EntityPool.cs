@@ -117,7 +117,7 @@ namespace mygame
 
 		public void FlushFreeIndices()
 		{
-			// Not super happy about this. It needs a sort so we don't remove things after _active has been decremented.
+			// Not super happy about this. It needs to sort so we don't remove things after _active has been decremented.
 
 			if (_freeIndices.Count == 0)
 				return;
@@ -153,7 +153,7 @@ namespace mygame
 			if (_active >= _objectPositionsArray.Length)
 				EnsureCapacity(_objectPositionsArray.Length * 2); // Double the capacity if no free index found
 
-			return _active++; //return the current active count and increment it
+			return _active++; //return the current active count and increment it afterwards
 		}
 
 		void EnsureCapacity(int capacity)
@@ -167,8 +167,8 @@ namespace mygame
 
 			static NativeArray<T> CreateOrScaleArray<T>(NativeArray<T> current, int capacity) where T : struct
 			{
-				//Make a new NativeArray and copy over excisting data if any.
-				//Dispose the excisting array if it excists.
+				//Make a new NativeArray and copy over existing data if any.
+				//Dispose the existing array if it exists.
 				var ret = new NativeArray<T>(capacity, Allocator.Persistent, NativeArrayOptions.ClearMemory);
 				if (current.IsCreated)
 				{
@@ -178,7 +178,7 @@ namespace mygame
 				return ret;
 			}
 
-			//Rescale the objects array and copy over excisting data if any
+			//Rescale the objects array and copy over existing data if any
 			{
 				var objects = new Transform[capacity];
 				if (_objects != null)

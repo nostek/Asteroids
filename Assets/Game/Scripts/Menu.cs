@@ -32,7 +32,7 @@ namespace mygame
 
 		void Start()
 		{
-			_validInputTime = Time.time + .5f; //A small delay so the user can't mistakenly press the Enter key.
+			_validInputTime = Time.time + .5f; //A small delay so the user can't mistakenly press the Enter key to early.
 
 			int points = PlayerPrefs.GetInt(GameConstants.PlayerPrefsLastScore, 0);
 			_textLastScore.text = $"Last Score: {points}";

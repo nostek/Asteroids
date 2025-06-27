@@ -6,12 +6,15 @@ namespace mygame
 	[CreateAssetMenu(fileName = "GameSoundsDatabase", menuName = "Scriptable Objects/GameSoundsDatabase")]
 	public class GameSoundsDatabase : ScriptableObject
 	{
+		[Header("Asteroid Sounds")]
 		[SerializeField] SoundID _explosionBig;
 		[SerializeField] SoundID _explosionMedium;
 		[SerializeField] SoundID _explosionSmall;
-		[Space]
+
+		[Header("Missile Sounds")]
 		[SerializeField] SoundID _fireMissile;
-		[Space]
+
+		[Header("Player Sounds")]
 		[SerializeField] SoundID _shipThrust;
 
 		public void PlayExplosionBig() => _explosionBig.Play();
