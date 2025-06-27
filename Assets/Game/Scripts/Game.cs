@@ -99,7 +99,8 @@ namespace mygame
 
 			_entitiesManager.Spawn(GameEntities.PlayerSpawn, Vector2.zero, Vector2.zero);
 
-			for (int i = 0; i < 3; i++)
+			//Spawn a initial amount of big asteroids on start
+			for (int i = 0; i < _tweaktable.AsteroidsInitialSpawnCount; i++)
 				_entitiesManager.Spawn(
 					GameEntities.AsteroidBig,
 					_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid),
