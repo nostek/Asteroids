@@ -38,6 +38,8 @@ namespace mygame
 			if (Time.time < _validInputTime)
 				return;
 
+			CloseWindow();
+
 			Addressables.LoadSceneAsync(_sceneMenu);
 		}
 	}
