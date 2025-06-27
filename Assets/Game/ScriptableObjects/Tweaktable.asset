@@ -15,7 +15,7 @@ MonoBehaviour:
   _randomBigAsteroidSpeedBetween: {x: 0.5, y: 1}
   _randomMediumAsteroidSpeedBetween: {x: 1, y: 2}
   _randomSmallAsteroidSpeedBetween: {x: 2, y: 4}
-  _asteroidSpawnDelay:
+  _asteroidSpawnDelayOverTime:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3

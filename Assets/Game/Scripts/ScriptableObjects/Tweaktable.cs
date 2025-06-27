@@ -14,11 +14,11 @@ namespace mygame
 		public float RandomSmallAsteroidSpeedBetween => Random.Range(_randomSmallAsteroidSpeedBetween.x, _randomSmallAsteroidSpeedBetween.y);
 
 		[Header("Asteroids Spawn Rate")]
-		[SerializeField] AnimationCurve _asteroidSpawnDelay;
+		[SerializeField] AnimationCurve _asteroidSpawnDelayOverTime;
 		public float GetNextAsteroidSpawnDelayOverTime()
 		{
 			var time = Time.time;
-			return time + _asteroidSpawnDelay.Evaluate(time);
+			return time + _asteroidSpawnDelayOverTime.Evaluate(time);
 		}
 
 		[Header("Missiles")]
