@@ -5,6 +5,7 @@ using UnityServiceLocator;
 
 namespace mygame
 {
+	[DefaultExecutionOrder(-1)]
 	public class Game : MonoBehaviour
 	{
 		[Header("Prefabs Asteroids")]
