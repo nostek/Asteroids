@@ -139,7 +139,7 @@ namespace mygame
 				data.Job.Complete();
 		}
 
-		void LateUpdate()
+		public void RunLateUpdate()
 		{
 			//Schedule the collision-check jobs so they run over to the next frame.
 			//That gives us a lot more time for the jobs to finish.
