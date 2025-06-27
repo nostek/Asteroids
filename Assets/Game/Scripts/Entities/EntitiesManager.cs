@@ -3,11 +3,9 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityServiceLocator;
 
 namespace mygame
 {
-	[DefaultExecutionOrder(-1)]
 	public class EntitiesManager : MonoBehaviour
 	{
 		public delegate void CollisionSolverDelegate(EntityReference collider, EntityReference otherCollider);
@@ -41,15 +39,6 @@ namespace mygame
 		}
 
 		readonly List<LifeTimeData> _lifeTimes = new();
-
-		WorldBoundsManager _worldBoundsManager;
-
-		void Awake()
-		{
-			ServiceLocator.Lookup
-				.Get(out _worldBoundsManager)
-				.Done();
-		}
 
 		void OnDestroy()
 		{
@@ -120,7 +109,7 @@ namespace mygame
 			return _entityPools[keyEntity].Pool.Spawn(position, directionWithSpeed);
 		}
 
-		void Update()
+		public void RunUpdate(Vector4 worldBounds)
 		{
 			//Complete the jobs first to ensure all operations are finished before iterating over results
 			foreach (var data in _collisionSolvers)
@@ -145,7 +134,7 @@ namespace mygame
 
 			//We want these jobs to run in parallel, so we schedule them first, then complete them in the correct order.
 			foreach (var data in _entityPools.Values)
-				data.Job = data.Pool.ScheduleUpdate(_worldBoundsManager.Bounds);
+				data.Job = data.Pool.ScheduleUpdate(worldBounds);
 			foreach (var data in _entityPools.Values)
 				data.Job.Complete();
 		}
