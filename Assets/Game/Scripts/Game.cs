@@ -120,6 +120,9 @@ namespace mygame
 
 		void Update()
 		{
+			//Run update for entities first
+			_entitiesManager.RunUpdate(_worldBoundsManager.Bounds);
+
 			if (Time.time > _nextSpawnTime && _player.IsValid())
 			{
 				_nextSpawnTime = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
