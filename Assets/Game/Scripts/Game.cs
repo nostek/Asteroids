@@ -28,7 +28,7 @@ namespace mygame
 		float _halfSizeBigAsteroid, _halfSizeMediumAsteroid, _halfSizeSmallAsteroid;
 		float _halfSizePlayer;
 
-		float _nextSpawn = 0f;
+		float _nextSpawnTime = 0f;
 
 		int _score = 0;
 		int _lives = 0;
@@ -108,7 +108,7 @@ namespace mygame
 					Random.insideUnitCircle.normalized * _tweaktable.RandomBigAsteroidSpeedBetween
 				);
 
-			_nextSpawn = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
+			_nextSpawnTime = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
 
 			//Wait a second before we spawn the Player so the user has time to get ready
 			TrySpawnPlayerAsync(1f).SafeExecute();
@@ -116,9 +116,9 @@ namespace mygame
 
 		void Update()
 		{
-			if (Time.time > _nextSpawn && _player.IsValid())
+			if (Time.time > _nextSpawnTime && _player.IsValid())
 			{
-				_nextSpawn = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
+				_nextSpawnTime = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
 
 				_entitiesManager.Spawn(
 					GameEntities.AsteroidBig,
