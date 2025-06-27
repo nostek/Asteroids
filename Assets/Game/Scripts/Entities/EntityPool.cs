@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using Unity.Burst;
 using Unity.Collections;
-using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -9,7 +7,7 @@ using UnityEngine.Jobs;
 
 namespace mygame
 {
-	public class EntityPool : System.IDisposable
+	public partial class EntityPool : System.IDisposable
 	{
 		readonly GameObject _prefabObject;
 		readonly float _objectHalfSize;
@@ -196,104 +194,5 @@ namespace mygame
 			if (_transformAccessArray.isCreated) _transformAccessArray.Dispose();
 			_transformAccessArray = new TransformAccessArray(_objects);
 		}
-
-		#region SCHEDULE UPDATE
-
-		public JobHandle ScheduleUpdate(Vector4 bounds)
-		{
-			return new UpdateJob
-			{
-				positions = _objectPositionsArray,
-				directionWithSpeed = _objectDirectionAndSpeedArray,
-				deltaTime = Time.deltaTime,
-				bounds = bounds,
-				scale = _objectHalfSize
-			}.Schedule(_transformAccessArray);
-		}
-
-		[BurstCompile]
-		struct UpdateJob : IJobParallelForTransform
-		{
-			[ReadOnly] public NativeArray<float2> directionWithSpeed;
-			public NativeArray<float2> positions;
-
-			public float deltaTime;
-			public float4 bounds;
-			public float scale;
-
-			[BurstCompile]
-			public void Execute(int index, TransformAccess transform)
-			{
-				var pos = positions[index];
-
-				pos += directionWithSpeed[index] * deltaTime;
-
-				if (pos.x + scale < bounds.x || pos.x - scale > bounds.z)
-					pos.x *= -1f;
-
-				if (pos.y + scale < bounds.y || pos.y - scale > bounds.w)
-					pos.y *= -1f;
-
-				positions[index] = pos;
-
-				transform.localPosition = new float3(pos.xy, 0f);
-			}
-		}
-
-		#endregion
-
-		#region SCHEDULE COLLISIONS
-
-		public JobHandle ScheduleCollisionsVs(EntityPool other, out NativeArray<int> collisions)
-		{
-			collisions = new NativeArray<int>(_active, Allocator.TempJob, NativeArrayOptions.ClearMemory);
-
-			if (_objectPositionsArray.Length == 0 || other._objectPositionsArray.Length == 0)
-			{
-				return new JobHandle(); // No objects to compare, return an empty job handle
-			}
-
-			return new CollisionsJob()
-			{
-				a_positions = _objectPositionsArray,
-				b_positions = other._objectPositionsArray,
-				b_positions_length = other._active,
-
-				colliderDistance = (_objectHalfSize + other._objectHalfSize) * (_objectHalfSize + other._objectHalfSize),
-				collisions = collisions,
-				ignoreSameIndex = this == other // Avoid self-collision if comparing with itself
-			}.Schedule(_active, 32);
-		}
-
-		[BurstCompile]
-		struct CollisionsJob : IJobParallelFor
-		{
-			[ReadOnly] public NativeArray<float2> a_positions;
-			[ReadOnly] public NativeArray<float2> b_positions;
-			public int b_positions_length;
-
-			public float colliderDistance;
-			public NativeArray<int> collisions;
-			public bool ignoreSameIndex;
-
-			[BurstCompile]
-			public void Execute(int index)
-			{
-				var a_pos = a_positions[index];
-
-				for (int i = 0; i < b_positions_length; i++)
-				{
-					if (ignoreSameIndex && i == index)
-						continue;   //skip self-collision
-
-					if (math.distancesq(a_pos, b_positions[i]) < colliderDistance)
-					{
-						collisions[index] = i + 1; // Store the index+1 of the collision. +1 to differentiate from no collision (0)
-					}
-				}
-			}
-		}
-
-		#endregion
 	}
 }
