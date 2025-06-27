@@ -24,8 +24,12 @@ namespace mygame
 
 		void OnDisable()
 		{
-			if (_thrust != null && _thrust.IsPlaying)
-				_thrust.Stop();
+			if (_thrust != null)
+			{
+				if (_thrust.IsPlaying)
+					_thrust.Stop();
+				_thrust = null;
+			}
 		}
 
 		void Update()
