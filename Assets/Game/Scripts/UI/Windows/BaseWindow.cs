@@ -3,7 +3,7 @@ using UnityServiceLocator;
 
 namespace mygame
 {
-	public class BaseWindow : MonoBehaviour
+	public abstract class BaseWindow : MonoBehaviour
 	{
 		protected WindowsManager _windowsManager;
 
