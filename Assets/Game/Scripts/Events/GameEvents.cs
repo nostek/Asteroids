@@ -19,8 +19,8 @@ namespace mygame
 
 		public readonly struct WaitingForSpawnEvent : IEvent
 		{
-			public WaitingForSpawnEvent(bool waiting) => Waiting = waiting;
-			public readonly bool Waiting;
+			public WaitingForSpawnEvent(bool isWaiting) => IsWaiting = isWaiting;
+			public readonly bool IsWaiting;
 		}
 	}
 }

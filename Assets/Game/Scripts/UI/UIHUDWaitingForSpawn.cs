@@ -21,6 +21,6 @@ namespace mygame
 
 		void OnDestroy() => EventsCenter.Unsubscribe<GameEvents.WaitingForSpawnEvent>(OnWaitingForSpawn);
 
-		void OnWaitingForSpawn(GameEvents.WaitingForSpawnEvent ev) => canvas.enabled = ev.Waiting;
+		void OnWaitingForSpawn(GameEvents.WaitingForSpawnEvent ev) => canvas.enabled = ev.IsWaiting;
 	}
 }
