@@ -172,7 +172,7 @@ namespace mygame
 			_soundsDatabase.PlayExplosionBig();
 
 			_lives--;
-			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
+			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the amount of lives we have left
 
 			if (_lives > 0)
 				TrySpawnPlayerAsync(1f).SafeExecute();
