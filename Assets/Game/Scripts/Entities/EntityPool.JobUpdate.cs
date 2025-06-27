@@ -9,14 +9,14 @@ namespace mygame
 {
 	public partial class EntityPool
 	{
-		public JobHandle ScheduleUpdate(Vector4 bounds)
+		public JobHandle ScheduleUpdate(Vector4 worldBounds)
 		{
 			return new UpdateJob
 			{
 				positions = _objectPositionsArray,
 				directionWithSpeed = _objectDirectionAndSpeedArray,
 				deltaTime = Time.deltaTime,
-				bounds = bounds,
+				bounds = worldBounds,
 				scale = _objectHalfSize
 			}.Schedule(_transformAccessArray);
 		}
@@ -37,6 +37,9 @@ namespace mygame
 				var pos = positions[index];
 
 				pos += directionWithSpeed[index] * deltaTime;
+
+				// Wrap position around bounds.
+				// Since middle of world is (0,0) we can negate the position to wrap it
 
 				if (pos.x + scale < bounds.x || pos.x - scale > bounds.z)
 					pos.x *= -1f;
