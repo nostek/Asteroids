@@ -58,6 +58,9 @@ namespace mygame
 
 		void Start()
 		{
+			_lives = _tweaktable.PlayerLives;
+			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
+
 			//Assuming all transforms are uniformed scaled
 			_halfSizeBigAsteroid = _prefabAsteroidBig.transform.localScale.x * .5f;
 			_halfSizeMediumAsteroid = _prefabAsteroidMedium.transform.localScale.x * .5f;
@@ -65,9 +68,6 @@ namespace mygame
 			_halfSizePlayer = _prefabPlayer.transform.localScale.x * .5f;
 			var halfSizePlayerSpawn = _prefabPlayerSpawn.transform.localScale.x * .5f;
 			var halfSizeMissile = _prefabMissile.transform.localScale.x * .5f;
-
-			_lives = _tweaktable.PlayerLives;
-			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
 
 			_entitiesManager.RegisterEntity(GameEntities.AsteroidBig, _prefabAsteroidBig, _halfSizeBigAsteroid);
 			_entitiesManager.RegisterEntity(GameEntities.AsteroidMedium, _prefabAsteroidMedium, _halfSizeMediumAsteroid);
@@ -80,7 +80,7 @@ namespace mygame
 
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidBig, OnBigAsteroid); //Makes two medium
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidMedium, OnMediumAsteroid); //Makes two small
-			/*_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnDespawn);*/ //Do not collide
+			/*_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnDespawn);*/ //Do not collide small vs small
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidMedium, OnMediumAsteroid, GameEntities.AsteroidBig, OnBigAsteroid); //Medium turns to small and Big turns to medium
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidMedium, OnMediumAsteroid); //Small moves in opposite direction and Medium turns to small
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidBig, OnBigAsteroid); //Small moves in opposite direction and Big turns to medium
@@ -93,10 +93,11 @@ namespace mygame
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidMedium, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidSmall, OnNoop);
 
+			//We use the PlayerSpawn entity as a collision detector for Asteroids in the spawn area.
+			//It runs on the job+burst system for maximum performance.
 			_entitiesManager.RegisterCollisionSolver(GameEntities.PlayerSpawn, OnPlayerSpawnHit, GameEntities.AsteroidBig, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.PlayerSpawn, OnPlayerSpawnHit, GameEntities.AsteroidMedium, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.PlayerSpawn, OnPlayerSpawnHit, GameEntities.AsteroidSmall, OnNoop);
-
 			_entitiesManager.Spawn(GameEntities.PlayerSpawn, Vector2.zero, Vector2.zero);
 
 			//Spawn a initial amount of big asteroids on start
@@ -109,6 +110,7 @@ namespace mygame
 
 			_nextSpawn = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
 
+			//Wait a second before we spawn the Player so the user has time to get ready
 			TrySpawnPlayerAsync(1f).SafeExecute();
 		}
 
@@ -192,7 +194,7 @@ namespace mygame
 
 		void OnPlayerSpawnHit(EntityReference _, EntityReference __)
 		{
-			_invalidSpawnFrame = Time.frameCount + 1; //We have a Asteroid inside the spawn area this frame
+			_invalidSpawnFrame = Time.frameCount + 1; //We have a Asteroid inside the spawn area this frame, invalidate this and next frame
 		}
 
 		void OnMissileVsBigAsteroid(EntityReference missile, EntityReference asteroid)
@@ -235,7 +237,7 @@ namespace mygame
 			asteroid.Despawn();
 
 			_soundsDatabase.PlayExplosionBig();
-			RespawnAsteroid(asteroid, otherCollider, GameEntities.AsteroidMedium, _tweaktable.RandomMediumAsteroidSpeedBetween);
+			SwapAsteroidTo(asteroid, otherCollider, GameEntities.AsteroidMedium, _tweaktable.RandomMediumAsteroidSpeedBetween);
 		}
 
 		void OnMediumAsteroid(EntityReference asteroid, EntityReference otherCollider)
@@ -243,7 +245,7 @@ namespace mygame
 			asteroid.Despawn();
 
 			_soundsDatabase.PlayExplosionMedium();
-			RespawnAsteroid(asteroid, otherCollider, GameEntities.AsteroidSmall, _tweaktable.RandomSmallAsteroidSpeedBetween);
+			SwapAsteroidTo(asteroid, otherCollider, GameEntities.AsteroidSmall, _tweaktable.RandomSmallAsteroidSpeedBetween);
 		}
 
 		void OnInvertDirection(EntityReference asteroid, EntityReference otherCollider)
@@ -274,7 +276,7 @@ namespace mygame
 			_entitiesManager.Spawn(entityKey, pos - (Vector2)right * halfSize, -right * randomSpeed);
 		}
 
-		void RespawnAsteroid(EntityReference asteroid, EntityReference other, int entityKey, float randomSpeed) //TODO: Terrible name
+		void SwapAsteroidTo(EntityReference asteroid, EntityReference other, int entityKey, float randomSpeed)
 		{
 			var pos = asteroid.GetPosition();
 			var dir = (pos - other.GetPosition()).normalized;
