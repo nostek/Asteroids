@@ -76,8 +76,10 @@ namespace mygame
 			_entitiesManager.RegisterEntity(GameEntities.Player, _prefabPlayer, _halfSizePlayer, ensureCapacity: 1); //Only want one of these
 			_entitiesManager.RegisterEntity(GameEntities.PlayerSpawn, _prefabPlayerSpawn, halfSizePlayerSpawn, ensureCapacity: 1); //Only want one of these
 
+			//Missiles has a lifetime
 			_entitiesManager.RegisterEntityLifetime(GameEntities.Missile, _tweaktable.MissilesSecondsToLive);
 
+			//Asteroids VS Asteroids
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidBig, OnBigAsteroid); //Makes two medium
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidMedium, OnMediumAsteroid); //Makes two small
 			/*_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnDespawn);*/ //Do not collide small vs small
@@ -85,15 +87,17 @@ namespace mygame
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidMedium, OnMediumAsteroid); //Small moves in opposite direction and Medium turns to small
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidBig, OnBigAsteroid); //Small moves in opposite direction and Big turns to medium
 
+			//Missiles VS Asteroids
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileVsBigAsteroid, GameEntities.AsteroidBig, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileVsMediumAsteroid, GameEntities.AsteroidMedium, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileVsSmallAsteroid, GameEntities.AsteroidSmall, OnNoop);
 
+			//Player VS Asteroids
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidBig, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidMedium, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Player, OnPlayerHit, GameEntities.AsteroidSmall, OnNoop);
 
-			//We use the PlayerSpawn entity as a detector for Asteroids in the spawn area.
+			//We use the PlayerSpawn entity for detecting Asteroids in the spawn area.
 			//It runs on the job+burst system for maximum performance.
 			_entitiesManager.RegisterCollisionSolver(GameEntities.PlayerSpawn, OnPlayerSpawnHit, GameEntities.AsteroidBig, OnNoop);
 			_entitiesManager.RegisterCollisionSolver(GameEntities.PlayerSpawn, OnPlayerSpawnHit, GameEntities.AsteroidMedium, OnNoop);
