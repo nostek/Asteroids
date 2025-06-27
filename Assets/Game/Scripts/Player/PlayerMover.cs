@@ -6,12 +6,6 @@ namespace mygame
 	[RequireComponent(typeof(Player), typeof(PlayerInput))]
 	public class PlayerMover : MonoBehaviour
 	{
-		[Header("Settings")]
-		[SerializeField] float _rotationSpeed = 180f; // Degrees per second
-		[SerializeField] float _thrustSpeed = 1f;
-		[SerializeField] float _maxSpeed = 2f;
-		[SerializeField] float _breakSpeed = 1f;
-
 		Transform _transform;
 		Player _player;
 		PlayerInput _input;
@@ -47,7 +41,7 @@ namespace mygame
 				var moveDirection = _player.Entity.GetDirectionAndSpeed();
 
 				//add forward momentum but clamp it at _maxSpeed
-				moveDirection = Vector2.ClampMagnitude(moveDirection + _thrustSpeed * dt * fwd, _maxSpeed);
+				moveDirection = Vector2.ClampMagnitude(moveDirection + _tweaktable.PlayerThrustSpeed * dt * fwd, _tweaktable.PlayerMaxSpeed);
 
 				_player.Entity.SetDirectionAndSpeed(moveDirection);
 			}
@@ -59,15 +53,15 @@ namespace mygame
 				//and decrease that, clamping at 0, then scale the normalized forward magnitude with the
 				//new speed
 				var speed = moveDirection.magnitude;
-				speed = Mathf.Max(0f, speed - _breakSpeed * dt);
+				speed = Mathf.Max(0f, speed - _tweaktable.PlayerBreakSpeed * dt);
 				moveDirection = moveDirection.normalized * speed;
 
 				_player.Entity.SetDirectionAndSpeed(moveDirection);
 			}
 
-			if (_rotationSpeed != 0f)
+			if (_tweaktable.PlayerRotationSpeed != 0f)
 			{
-				rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _rotationSpeed * dt * -1f);
+				rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _tweaktable.PlayerRotationSpeed * dt * -1f);
 				_transform.localRotation = rot;
 			}
 		}

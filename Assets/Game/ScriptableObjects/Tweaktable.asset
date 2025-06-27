@@ -45,3 +45,7 @@ MonoBehaviour:
   _pointsForMediumAsteroid: 50
   _pointsForSmallAsteroid: 100
   _playerLives: 3
+  _playerRotationSpeed: 270
+  _playerMaxSpeed: 5
+  _playerThrustSpeed: 5
+  _playerBreakSpeed: 10
