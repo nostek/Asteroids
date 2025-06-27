@@ -68,6 +68,39 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "1D Axis",
+                    "id": "b701cacf-e4f1-4eda-853b-8057e50e8c37",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "AxisDeadzone",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "affb3cb9-f711-428d-a085-644a8435ad15",
+                    "path": "<Gamepad>/leftStick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "3aa725bd-039a-439f-ab75-6918427dfb13",
+                    "path": "<Gamepad>/leftStick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "e05902ec-a779-49fd-b0fb-5768322e6d55",
                     "path": "<Keyboard>/upArrow",
@@ -80,10 +113,32 @@
                 },
                 {
                     "name": "",
+                    "id": "a5af29d9-c5d6-42bd-b7f8-3dd27d1fa932",
+                    "path": "<Gamepad>/leftStick/up",
+                    "interactions": "",
+                    "processors": "AxisDeadzone",
+                    "groups": "",
+                    "action": "Thrust",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "d6e7064a-be25-4a7a-ae02-ad4fa157c044",
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
+                    "groups": "",
+                    "action": "Brake",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "be034ca3-e8dd-4141-82ba-6db7583f0f34",
+                    "path": "<Gamepad>/leftStick/down",
+                    "interactions": "",
+                    "processors": "AxisDeadzone",
                     "groups": "",
                     "action": "Brake",
                     "isComposite": false,
@@ -110,6 +165,17 @@
                     "name": "",
                     "id": "24acfee0-0995-4eae-8b9a-59f5720d0442",
                     "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b105df65-0371-426b-80d2-a592d59b0a5d",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
