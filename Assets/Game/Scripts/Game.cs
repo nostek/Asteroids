@@ -136,12 +136,6 @@ namespace mygame
 			}
 		}
 
-		void LateUpdate()
-		{
-			//Run late update on entities so they can schedule collision jobs
-			_entitiesManager.RunLateUpdate();
-		}
-
 		#region PLAYER
 
 		//Uses Awaitable instead of Coroutines which does not create any garbage.
