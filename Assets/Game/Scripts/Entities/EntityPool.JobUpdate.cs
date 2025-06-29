@@ -17,7 +17,7 @@ namespace mygame
 				directionWithSpeed = _objectDirectionAndSpeedArray,
 				deltaTime = Time.deltaTime,
 				bounds = worldBounds,
-				scale = _objectHalfSize
+				halfSize = _objectHalfSize
 			}.Schedule(_transformAccessArray);
 		}
 
@@ -29,7 +29,7 @@ namespace mygame
 
 			public float deltaTime;
 			public float4 bounds;
-			public float scale;
+			public float halfSize;
 
 			[BurstCompile]
 			public void Execute(int index, TransformAccess transform)
@@ -41,10 +41,10 @@ namespace mygame
 				// Wrap position around bounds.
 				// Since middle of world is (0,0) we can negate the position to wrap it
 
-				if (pos.x + scale < bounds.x || pos.x - scale > bounds.z)
+				if (pos.x + halfSize < bounds.x || pos.x - halfSize > bounds.z)
 					pos.x *= -1f;
 
-				if (pos.y + scale < bounds.y || pos.y - scale > bounds.w)
+				if (pos.y + halfSize < bounds.y || pos.y - halfSize > bounds.w)
 					pos.y *= -1f;
 
 				positions[index] = pos;
