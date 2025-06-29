@@ -64,10 +64,10 @@ namespace mygame
 					if (i == index)
 						continue;   //skip self-collision
 
-					if (math.distancesq(a_pos, b_positions[i]) < colliderDistance)
-					{
-						collisions[index] = i + 1; // Store the index+1 of the collision. +1 to differentiate from no collision (0)
-					}
+					if (math.distancesq(a_pos, b_positions[i]) - colliderDistance > 0f)
+						continue;
+
+					collisions[index] = i + 1; // Store the index+1 of the collision. +1 to differentiate from no collision (0)
 				}
 			}
 		}
@@ -89,10 +89,10 @@ namespace mygame
 
 				for (int i = 0; i < b_active; i++)
 				{
-					if (math.distancesq(a_pos, b_positions[i]) < colliderDistance)
-					{
-						collisions[index] = i + 1; // Store the index+1 of the collision. +1 to differentiate from no collision (0)
-					}
+					if (math.distancesq(a_pos, b_positions[i]) - colliderDistance > 0f)
+						continue;
+
+					collisions[index] = i + 1; // Store the index+1 of the collision. +1 to differentiate from no collision (0)
 				}
 			}
 		}
