@@ -11,6 +11,9 @@ namespace mygame
 	{
 		public JobHandle ScheduleUpdate(Vector4 worldBounds)
 		{
+			if (_active == 0)
+				return default;
+
 			return new UpdateJob
 			{
 				positions = _objectPositionsArray,
