@@ -29,7 +29,7 @@ namespace mygame
 
 					colliderDistance = (_objectHalfSize + other._objectHalfSize) * (_objectHalfSize + other._objectHalfSize),
 					collisions = collisions,
-				}.Schedule(_active, 32);
+				}.ScheduleParallel(_active, 32, default);
 			}
 
 			return new CollisionsJobVsOther()
@@ -40,11 +40,11 @@ namespace mygame
 
 				colliderDistance = (_objectHalfSize + other._objectHalfSize) * (_objectHalfSize + other._objectHalfSize),
 				collisions = collisions,
-			}.Schedule(_active, 32);
+			}.ScheduleParallel(_active, 32, default);
 		}
 
 		[BurstCompile]
-		struct CollisionsJobVsSelf : IJobParallelFor
+		struct CollisionsJobVsSelf : IJobFor
 		{
 			[ReadOnly] public NativeArray<float2> a_positions;
 			[ReadOnly] public NativeArray<float2> b_positions;
@@ -72,7 +72,7 @@ namespace mygame
 		}
 
 		[BurstCompile]
-		struct CollisionsJobVsOther : IJobParallelFor
+		struct CollisionsJobVsOther : IJobFor
 		{
 			[ReadOnly] public NativeArray<float2> a_positions;
 			[ReadOnly] public NativeArray<float2> b_positions;
