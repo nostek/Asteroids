@@ -25,7 +25,7 @@ namespace mygame
 				{
 					a_positions = _objectPositionsArray,
 					b_positions = other._objectPositionsArray,
-					b_positions_length = other._active,
+					b_active = other._active,
 
 					colliderDistance = (_objectHalfSize + other._objectHalfSize) * (_objectHalfSize + other._objectHalfSize),
 					collisions = collisions,
@@ -36,7 +36,7 @@ namespace mygame
 			{
 				a_positions = _objectPositionsArray,
 				b_positions = other._objectPositionsArray,
-				b_positions_length = other._active,
+				b_active = other._active,
 
 				colliderDistance = (_objectHalfSize + other._objectHalfSize) * (_objectHalfSize + other._objectHalfSize),
 				collisions = collisions,
@@ -48,7 +48,7 @@ namespace mygame
 		{
 			[ReadOnly] public NativeArray<float2> a_positions;
 			[ReadOnly] public NativeArray<float2> b_positions;
-			public int b_positions_length;
+			public int b_active;
 
 			public float colliderDistance;
 			[WriteOnly] public NativeArray<int> collisions;
@@ -58,7 +58,7 @@ namespace mygame
 			{
 				var a_pos = a_positions[index];
 
-				for (int i = 0; i < b_positions_length; i++)
+				for (int i = 0; i < b_active; i++)
 				{
 					if (i == index)
 						continue;   //skip self-collision
@@ -76,7 +76,7 @@ namespace mygame
 		{
 			[ReadOnly] public NativeArray<float2> a_positions;
 			[ReadOnly] public NativeArray<float2> b_positions;
-			public int b_positions_length;
+			public int b_active;
 
 			public float colliderDistance;
 			[WriteOnly] public NativeArray<int> collisions;
@@ -86,7 +86,7 @@ namespace mygame
 			{
 				var a_pos = a_positions[index];
 
-				for (int i = 0; i < b_positions_length; i++)
+				for (int i = 0; i < b_active; i++)
 				{
 					if (math.distancesq(a_pos, b_positions[i]) < colliderDistance)
 					{
