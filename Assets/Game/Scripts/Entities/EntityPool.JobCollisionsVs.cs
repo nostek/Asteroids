@@ -16,9 +16,9 @@ namespace mygame
 				return new JobHandle(); // No objects to compare, return an empty job handle
 			}
 
-			// Run another job if we are evaluation collisions with ourself.
+			// Run a different job if we are evaluation collisions against ourselves.
 			// This job check so we are not detecting a collision between the same entity
-			// with the price of a extra compare.
+			// with the price of a extra compare in O(n^2).
 			if (this == other)
 			{
 				return new CollisionsJobVsSelf()
