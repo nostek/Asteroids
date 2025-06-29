@@ -43,7 +43,7 @@ namespace mygame
 			}.ScheduleParallel(_active, 32, default);
 		}
 
-		[BurstCompile]
+		[BurstCompile(CompileSynchronously = true, FloatPrecision = FloatPrecision.Standard, FloatMode = FloatMode.Fast)]
 		struct CollisionsJobVsSelf : IJobFor
 		{
 			[ReadOnly] public NativeArray<float2> a_positions;
@@ -51,7 +51,7 @@ namespace mygame
 			public int b_positions_length;
 
 			public float colliderDistance;
-			public NativeArray<int> collisions;
+			[WriteOnly] public NativeArray<int> collisions;
 
 			[BurstCompile]
 			public void Execute(int index)
@@ -71,7 +71,7 @@ namespace mygame
 			}
 		}
 
-		[BurstCompile]
+		[BurstCompile(CompileSynchronously = true, FloatPrecision = FloatPrecision.Standard, FloatMode = FloatMode.Fast)]
 		struct CollisionsJobVsOther : IJobFor
 		{
 			[ReadOnly] public NativeArray<float2> a_positions;
@@ -79,7 +79,7 @@ namespace mygame
 			public int b_positions_length;
 
 			public float colliderDistance;
-			public NativeArray<int> collisions;
+			[WriteOnly] public NativeArray<int> collisions;
 
 			[BurstCompile]
 			public void Execute(int index)

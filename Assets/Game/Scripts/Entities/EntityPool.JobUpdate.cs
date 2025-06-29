@@ -21,7 +21,7 @@ namespace mygame
 			}.Schedule(_transformAccessArray);
 		}
 
-		[BurstCompile]
+		[BurstCompile(CompileSynchronously = true, FloatPrecision = FloatPrecision.Standard, FloatMode = FloatMode.Fast)]
 		struct UpdateJob : IJobParallelForTransform
 		{
 			[ReadOnly] public NativeArray<float2> directionWithSpeed;
