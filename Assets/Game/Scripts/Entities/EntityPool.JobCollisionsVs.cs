@@ -9,12 +9,13 @@ namespace mygame
 	{
 		public JobHandle ScheduleCollisionsVs(EntityPool other, out NativeArray<int> collisions)
 		{
-			collisions = new NativeArray<int>(_active, Allocator.TempJob, NativeArrayOptions.ClearMemory);
-
 			if (_objectPositionsArray.Length == 0 || other._objectPositionsArray.Length == 0)
 			{
+				collisions = default;
 				return new JobHandle(); // No objects to compare, return an empty job handle
 			}
+
+			collisions = new NativeArray<int>(_active, Allocator.TempJob, NativeArrayOptions.ClearMemory);
 
 			// Run a different job if we are evaluation collisions against ourselves.
 			// This job check so we are not detecting a collision between the same entity
