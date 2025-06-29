@@ -12,7 +12,7 @@ namespace mygame
 			if (_objectPositionsArray.Length == 0 || other._objectPositionsArray.Length == 0)
 			{
 				collisions = default;
-				return new JobHandle(); // No objects to compare, return an empty job handle
+				return default; // No objects to compare, return an empty job handle
 			}
 
 			collisions = new NativeArray<int>(_active, Allocator.TempJob, NativeArrayOptions.ClearMemory);
