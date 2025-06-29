@@ -44,11 +44,13 @@ namespace mygame
 				// Wrap position around bounds.
 				// Since middle of world is (0,0) we can negate the position to wrap it
 
-				if (pos.x + halfSize < bounds.x || pos.x - halfSize > bounds.z)
-					pos.x *= -1f;
+				//if (pos.x + halfSize < bounds.x || pos.x - halfSize > bounds.z)
+				//	pos.x *= -1f;
+				pos.x *= math.select(1f, -1f, pos.x + halfSize < bounds.x || pos.x - halfSize > bounds.z);
 
-				if (pos.y + halfSize < bounds.y || pos.y - halfSize > bounds.w)
-					pos.y *= -1f;
+				//if (pos.y + halfSize < bounds.y || pos.y - halfSize > bounds.w)
+				//	pos.y *= -1f;
+				pos.y *= math.select(1f, -1f, pos.y + halfSize < bounds.y || pos.y - halfSize > bounds.w);
 
 				positions[index] = pos;
 
