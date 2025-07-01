@@ -35,7 +35,7 @@ namespace mygame
 			_validInputTime = Time.time + .5f; //A small delay so the user can't mistakenly press the Enter key to early.
 
 			int points = PlayerPrefs.GetInt(GameConstants.PlayerPrefsLastScore, 0);
-			_textLastScore.text = $"Last Score: {points}";
+			_textLastScore.SetText("Last Score: {0}", points);
 		}
 
 		void OnAccept(InputAction.CallbackContext ctx)
