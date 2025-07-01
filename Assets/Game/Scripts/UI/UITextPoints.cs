@@ -21,6 +21,6 @@ namespace mygame
 
 		void OnAddPoints(GameEvents.AddPointsEvent ev) => RefreshText(ev.TotalPoints);
 
-		void RefreshText(int points) => _text.text = $"Points: {points}";
+		void RefreshText(int points) => _text.SetText("Points: {0}", points);
 	}
 }
