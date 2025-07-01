@@ -11,7 +11,8 @@ namespace mygame
 		PlayerInput _input;
 
 		EntitiesManager _entitiesManager;
-		Tweaktable _tweaktable;
+		Tweaktable _tweakTable;
+		PlayerTweaktable _playerTweaktable;
 
 		void Awake()
 		{
@@ -22,7 +23,8 @@ namespace mygame
 
 			ServiceLocator.Lookup
 				.Get(out _entitiesManager)
-				.Get(out _tweaktable)
+				.Get(out _tweakTable)
+				.Get(out _playerTweaktable)
 				.Done();
 		}
 
@@ -34,14 +36,14 @@ namespace mygame
 			Vector2 fwd = rot * Vector3.up; //Implicit conversion to Vector2
 
 			if (_input.DoFire)
-				_entitiesManager.Spawn(GameEntities.Missile, pos, fwd * _tweaktable.MissileSpeed);
+				_entitiesManager.Spawn(GameEntities.Missile, pos, fwd * _tweakTable.MissileSpeed);
 
 			if (_input.IsThrusting)
 			{
 				var moveDirection = _player.Entity.GetDirectionAndSpeed();
 
 				//add forward momentum but clamp it at _maxSpeed
-				moveDirection = Vector2.ClampMagnitude(moveDirection + _tweaktable.PlayerThrustSpeed * dt * fwd, _tweaktable.PlayerMaxSpeed);
+				moveDirection = Vector2.ClampMagnitude(moveDirection + _playerTweaktable.PlayerThrustSpeed * dt * fwd, _playerTweaktable.PlayerMaxSpeed);
 
 				_player.Entity.SetDirectionAndSpeed(moveDirection);
 			}
@@ -53,15 +55,15 @@ namespace mygame
 				//and decrease that, clamping at 0, then scale the normalized forward magnitude with the
 				//new speed
 				var speed = moveDirection.magnitude;
-				speed = Mathf.Max(0f, speed - _tweaktable.PlayerBreakSpeed * dt);
+				speed = Mathf.Max(0f, speed - _playerTweaktable.PlayerBreakSpeed * dt);
 				moveDirection = moveDirection.normalized * speed;
 
 				_player.Entity.SetDirectionAndSpeed(moveDirection);
 			}
 
-			if (_tweaktable.PlayerRotationSpeed != 0f)
+			if (_playerTweaktable.PlayerRotationSpeed != 0f)
 			{
-				rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _tweaktable.PlayerRotationSpeed * dt * -1f);
+				rot *= Quaternion.Euler(0f, 0f, _input.RotateDirection * _playerTweaktable.PlayerRotationSpeed * dt * -1f);
 				_transform.localRotation = rot;
 			}
 		}

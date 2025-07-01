@@ -15,6 +15,7 @@ MonoBehaviour:
   _randomBigAsteroidSpeedBetween: {x: 0.5, y: 1}
   _randomMediumAsteroidSpeedBetween: {x: 1, y: 2}
   _randomSmallAsteroidSpeedBetween: {x: 2, y: 4}
+  _asteroidsInitialSpawnCount: 3
   _asteroidSpawnDelayOverTime:
     serializedVersion: 2
     m_Curve:
@@ -44,8 +45,3 @@ MonoBehaviour:
   _pointsForBigAsteroid: 20
   _pointsForMediumAsteroid: 50
   _pointsForSmallAsteroid: 100
-  _playerLives: 3
-  _playerRotationSpeed: 270
-  _playerMaxSpeed: 5
-  _playerThrustSpeed: 5
-  _playerBreakSpeed: 10

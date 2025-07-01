@@ -23,6 +23,7 @@ namespace mygame
 		WindowsManager _windowsManager;
 
 		Tweaktable _tweaktable;
+		PlayerTweaktable _playerTweaktable;
 		WindowsDatabase _windowsDatabase;
 		GameSoundsDatabase _soundsDatabase;
 
@@ -45,6 +46,7 @@ namespace mygame
 				.Get(out _entitiesManager)
 				.Get(out _windowsManager)
 				.Get(out _tweaktable)
+				.Get(out _playerTweaktable)
 				.Get(out _windowsDatabase)
 				.Get(out _soundsDatabase)
 				.Done();
@@ -59,7 +61,7 @@ namespace mygame
 
 		void Start()
 		{
-			_lives = _tweaktable.PlayerLives;
+			_lives = _playerTweaktable.PlayerLives;
 			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
 
 			//Assuming all transforms are uniformed scaled

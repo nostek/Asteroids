@@ -58,6 +58,7 @@ MonoBehaviour:
   - {fileID: 6169990705856395726}
   scriptableObjects:
   - {fileID: 11400000, guid: d0b12a20de7d240fab03b18909f5b92a, type: 2}
+  - {fileID: 11400000, guid: 835809176cea86c45afc7fad46b89526, type: 2}
   - {fileID: 11400000, guid: be5c898f0704e754181fe25387700ebd, type: 2}
   - {fileID: 11400000, guid: cfb12d8602ea3fa4eac113e7a80a4e60, type: 2}
 --- !u!114 &1615025345976642594
@@ -130,3 +131,5 @@ MonoBehaviour:
     ID: 268435456
     _sourceAsset: {fileID: 11400000, guid: f1cc19a2cbfa79840b7f5fb3c40d96a2, type: 2}
     <DebugObject>k__BackingField: {fileID: 4333398850841293924}
+  _volumeLower: 0.25
+  _fadeTimeInSeconds: 0.5
