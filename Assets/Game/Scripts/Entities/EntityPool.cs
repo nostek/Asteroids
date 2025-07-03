@@ -181,7 +181,7 @@ namespace mygame
 				var objects = new Transform[capacity];
 				if (_objects != null)
 					System.Array.Copy(_objects, objects, _objects.Length);
-				for (int i = _objects != null ? _objects.Length : 0; i < capacity; i++)
+				for (int i = _objects?.Length ?? 0; i < capacity; i++)
 				{
 					var go = Object.Instantiate(_prefabObject, _parent);
 					go.SetActive(false);
