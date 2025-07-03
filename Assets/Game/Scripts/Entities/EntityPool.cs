@@ -115,7 +115,7 @@ namespace mygame
 
 		public void FlushFreeIndices()
 		{
-			// Not super happy about this. It needs to sort so we don't remove things after _active has been decremented.
+			// Not super happy about this. It needs to be sorted, so we don't remove things after _active has been decremented.
 
 			if (_freeIndices.Count == 0)
 				return;
@@ -135,7 +135,7 @@ namespace mygame
 
 			_objects[index].gameObject.SetActive(false);
 
-			_objectPositionsArray[index] = _objectPositionsArray[_active - 1]; // Just copy the values from the active element, as the current index data can be discarded
+			_objectPositionsArray[index] = _objectPositionsArray[_active - 1]; // Only copy the values from the active element, as the current index data can be discarded
 			_objectDirectionAndSpeedArray[index] = _objectDirectionAndSpeedArray[_active - 1];
 			_objectLifetime[index] = _objectLifetime[_active - 1];
 
@@ -151,7 +151,7 @@ namespace mygame
 			if (_active >= _objectPositionsArray.Length)
 				EnsureCapacity(_objectPositionsArray.Length * 2); // Double the capacity if no free index found
 
-			return _active++; //return the current active count and increment it afterwards
+			return _active++; //return the current active count and increment it afterward
 		}
 
 		void EnsureCapacity(int capacity)
@@ -176,7 +176,7 @@ namespace mygame
 				return ret;
 			}
 
-			//Rescale the objects array and copy over existing data if any
+			//Rescale the 'objects' array and copy over existing data if any
 			{
 				var objects = new Transform[capacity];
 				if (_objects != null)
