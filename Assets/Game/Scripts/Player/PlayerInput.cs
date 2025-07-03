@@ -1,29 +1,17 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace mygame
 {
-	public class PlayerInput : MonoBehaviour
+	public class PlayerInput : MonoBehaviour, PlayerShipInput.IMovementActions, PlayerShipInput.IActionsActions
 	{
 		PlayerShipInput _input;
-
-		float _rotateDirection = 0f;
-		bool _isThrusting = false;
-		bool _isBreaking = false;
-		bool _doFire = false;
 
 		void Awake()
 		{
 			_input = new PlayerShipInput();
-			_input.Movement.Rotate.performed += ctx => _rotateDirection = ctx.ReadValue<float>();
-			_input.Movement.Rotate.canceled += _ => _rotateDirection = 0f;
-
-			_input.Movement.Thrust.performed += _ => _isThrusting = true;
-			_input.Movement.Thrust.canceled += _ => _isThrusting = false;
-
-			_input.Movement.Brake.performed += _ => _isBreaking = true;
-			_input.Movement.Brake.canceled += _ => _isBreaking = false;
-
-			_input.Actions.Fire.performed += _ => _doFire = true;
+			_input.Movement.SetCallbacks(this);
+			_input.Actions.SetCallbacks(this);
 		}
 
 		void OnEnable() => _input.Enable();
@@ -32,13 +20,43 @@ namespace mygame
 
 		void LateUpdate()
 		{
-			//clear action bools in LateUpdate(), so things that read in Update() will get the same value
-			_doFire = false;
+			//clear action booleans in LateUpdate(), so things that read in Update() will get the same value
+			DoFire = false;
 		}
 
-		public float RotateDirection => _rotateDirection;
-		public bool IsThrusting => _isThrusting;
-		public bool IsBreaking => _isBreaking;
-		public bool DoFire => _doFire;
+		public float RotateDirection { get; private set; } = 0f;
+		public bool IsThrusting { get; private set; } = false;
+		public bool IsBreaking { get; private set; } = false;
+		public bool DoFire { get; private set; } = false;
+
+		void PlayerShipInput.IMovementActions.OnRotate(InputAction.CallbackContext context)
+		{
+			if (context.phase == InputActionPhase.Performed)
+				RotateDirection = context.ReadValue<float>();
+			else if (context.phase == InputActionPhase.Canceled)
+				RotateDirection = 0f;
+		}
+
+		void PlayerShipInput.IMovementActions.OnThrust(InputAction.CallbackContext context)
+		{
+			if (context.phase == InputActionPhase.Performed)
+				IsThrusting = true;
+			else if (context.phase == InputActionPhase.Canceled)
+				IsThrusting = false;
+		}
+
+		void PlayerShipInput.IMovementActions.OnBrake(InputAction.CallbackContext context)
+		{
+			if (context.phase == InputActionPhase.Performed)
+				IsBreaking = true;
+			else if (context.phase == InputActionPhase.Canceled)
+				IsBreaking = false;
+		}
+
+		void PlayerShipInput.IActionsActions.OnFire(InputAction.CallbackContext context)
+		{
+			if (context.phase == InputActionPhase.Performed)
+				DoFire = true;
+		}
 	}
 }
