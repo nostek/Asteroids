@@ -158,7 +158,7 @@ namespace mygame
 					return;
 			}
 
-			//if anything is inside player spawn, we don't want to spawn
+			//if anything is inside player spawn, we don't want to spawn this frame
 			while (Time.frameCount <= _invalidSpawnFrame)
 				await Awaitable.NextFrameAsync();
 
