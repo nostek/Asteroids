@@ -6,10 +6,9 @@ namespace mygame
     {
 	    public static class Session
 	    {
-		    public readonly struct AddPoints : IEvent
+		    public readonly struct PointsChanged : IEvent
 		    {
-			    public AddPoints(int addedPoints, int totalPoints) => (AddedPoints, TotalPoints) = (addedPoints, totalPoints);
-			    public readonly int AddedPoints;
+			    public PointsChanged(int totalPoints) => (TotalPoints) = (totalPoints);
 			    public readonly int TotalPoints;
 		    }
 	    }

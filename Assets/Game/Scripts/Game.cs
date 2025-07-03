@@ -216,7 +216,7 @@ namespace mygame
 			SplitAsteroid(asteroid, missile, GameEntities.AsteroidMedium, _halfSizeMediumAsteroid, _tweaktable.RandomMediumAsteroidSpeedBetween);
 
 			_score += _tweaktable.PointsForBigAsteroid;
-			EventsCenter.Invoke(new GameEvents.Session.AddPoints(_tweaktable.PointsForBigAsteroid, _score));
+			EventsCenter.Invoke(new GameEvents.Session.PointsChanged(_score));
 		}
 
 		void OnMissileVsMediumAsteroid(EntityReference missile, EntityReference asteroid)
@@ -228,7 +228,7 @@ namespace mygame
 			SplitAsteroid(asteroid, missile, GameEntities.AsteroidSmall, _halfSizeSmallAsteroid, _tweaktable.RandomSmallAsteroidSpeedBetween);
 
 			_score += _tweaktable.PointsForMediumAsteroid;
-			EventsCenter.Invoke(new GameEvents.Session.AddPoints(_tweaktable.PointsForMediumAsteroid, _score));
+			EventsCenter.Invoke(new GameEvents.Session.PointsChanged(_score));
 		}
 
 		void OnMissileVsSmallAsteroid(EntityReference missile, EntityReference asteroid)
@@ -239,7 +239,7 @@ namespace mygame
 			_soundsDatabase.PlayExplosionSmall();
 
 			_score += _tweaktable.PointsForSmallAsteroid;
-			EventsCenter.Invoke(new GameEvents.Session.AddPoints(_tweaktable.PointsForSmallAsteroid, _score));
+			EventsCenter.Invoke(new GameEvents.Session.PointsChanged(_score));
 		}
 
 		void OnBigAsteroid(EntityReference asteroid, EntityReference otherCollider)
