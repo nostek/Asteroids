@@ -281,11 +281,11 @@ namespace mygame
 			var pos = asteroid.GetPosition();
 			var posOther = other.GetPosition();
 
-			var dir = (posOther - pos).normalized;
-			var right = Vector3.Cross(Vector3.forward, dir);
+			Vector2 dir = (posOther - pos).normalized;
+			Vector2 right = Vector3.Cross(Vector3.forward, dir);
 
-			_entitiesManager.Spawn(entityKey, pos + (Vector2)right * halfSize, right * randomSpeed);
-			_entitiesManager.Spawn(entityKey, pos - (Vector2)right * halfSize, -right * randomSpeed);
+			_entitiesManager.Spawn(entityKey, pos + right * halfSize, right * randomSpeed);
+			_entitiesManager.Spawn(entityKey, pos - right * halfSize, -right * randomSpeed);
 		}
 
 		void SwapAsteroidTo(EntityReference asteroid, EntityReference other, int entityKey, float randomSpeed)
