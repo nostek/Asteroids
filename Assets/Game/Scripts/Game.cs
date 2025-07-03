@@ -33,7 +33,8 @@ namespace mygame
 		float _nextSpawnTime = 0f;
 
 		int _score = 0;
-		int _lives = 0;
+
+		readonly LivesCounter _lives = new();
 
 		int _invalidSpawnFrame = 0;
 
@@ -61,8 +62,7 @@ namespace mygame
 
 		void Start()
 		{
-			_lives = _playerTweaktable.PlayerLives;
-			EventsCenter.Invoke(new GameEvents.Player.LivesChanged(_lives)); //So the UI can update with the dynamic value
+			_lives.SetLives(_playerTweaktable.PlayerLives);
 
 			//Assuming all transforms are uniformed scaled
 			_halfSizeBigAsteroid = _prefabAsteroidBig.transform.localScale.x * .5f;
@@ -186,13 +186,14 @@ namespace mygame
 
 			_soundsDatabase.PlayExplosionBig();
 
-			_lives--;
-			EventsCenter.Invoke(new GameEvents.Player.LivesChanged(_lives)); //So the UI can update with the number of lives we have left
-
-			if (_lives > 0)
-				TrySpawnPlayerAsync(1f).SafeExecute();
-			else
+			bool isGameOver = _lives.TakeLife();
+			if (isGameOver)
+			{
 				OnGameOver();
+				return;
+			}
+
+			TrySpawnPlayerAsync(1f).SafeExecute();
 		}
 
 		void OnGameOver()
