@@ -102,11 +102,25 @@ namespace mygame
 			});
 		}
 
+		/// <summary>
+		/// Returns an EntityReference to the newly spawned Entity.
+ 		/// The reference is only valid until the next frame.
+ 		/// Use ToPermanent if a longer reference is needed.
+		/// </summary>
 		public EntityReference Spawn(int keyEntity, Vector2 position, Vector2 directionWithSpeed)
 		{
 			Assert.IsTrue(_entityPools.ContainsKey(keyEntity), $"Entity is not registered: {keyEntity}");
 
 			return _entityPools[keyEntity].Pool.Spawn(position, directionWithSpeed);
+		}
+
+		/// <summary>
+		/// Returns an EntityReference to the newly spawned Entity as ToPermanent().
+		/// It has slower access to its internals, but it can be used until it is despawned.
+		/// </summary>
+		public EntityReference SpawnAsPermanent(int keyEntity, Vector2 position, Vector2 directionWithSpeed)
+		{
+			return Spawn(keyEntity, position, directionWithSpeed).ToPermanent();
 		}
 
 		public void RunUpdate(Vector4 worldBounds)

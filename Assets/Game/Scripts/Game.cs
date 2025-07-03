@@ -173,7 +173,7 @@ namespace mygame
 		void SpawnPlayer()
 		{
 			// Spawn the player at the center of the world bounds
-			_player = _entitiesManager.Spawn(GameEntities.Player, Vector2.zero, Vector2.zero).ToPermanent(); //Use ToPermanent(). Slower access, but a stable index.
+			_player = _entitiesManager.SpawnAsPermanent(GameEntities.Player, Vector2.zero, Vector2.zero);
 			_player.GetGameObject().GetComponent<Player>().Entity = _player;
 		}
 
