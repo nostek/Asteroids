@@ -32,9 +32,8 @@ namespace mygame
 
 		float _nextSpawnTime = 0f;
 
-		int _score = 0;
-
 		readonly LivesCounter _lives = new();
+		readonly ScoreCounter _score = new();
 
 		int _invalidSpawnFrame = 0;
 
@@ -199,7 +198,7 @@ namespace mygame
 		void OnGameOver()
 		{
 			//I would use something else when saving important data. But trivial data like this PlayerPrefs is fine (except for WebGL+itch.io)
-			PlayerPrefs.SetInt(GameConstants.PlayerPrefsLastScore, _score);
+			PlayerPrefs.SetInt(GameConstants.PlayerPrefsLastScore, _score.Score);
 
 			_windowsManager.OpenWindow(_windowsDatabase.WindowGameOver);
 		}
@@ -221,8 +220,7 @@ namespace mygame
 			_soundsDatabase.PlayExplosionBig();
 			SplitAsteroid(asteroid, missile, GameEntities.AsteroidMedium, _halfSizeMediumAsteroid, _tweaktable.RandomMediumAsteroidSpeedBetween);
 
-			_score += _tweaktable.PointsForBigAsteroid;
-			EventsCenter.Invoke(new GameEvents.Session.PointsChanged(_score));
+			_score.AddPoints(_tweaktable.PointsForBigAsteroid);
 		}
 
 		void OnMissileVsMediumAsteroid(EntityReference missile, EntityReference asteroid)
@@ -233,8 +231,7 @@ namespace mygame
 			_soundsDatabase.PlayExplosionMedium();
 			SplitAsteroid(asteroid, missile, GameEntities.AsteroidSmall, _halfSizeSmallAsteroid, _tweaktable.RandomSmallAsteroidSpeedBetween);
 
-			_score += _tweaktable.PointsForMediumAsteroid;
-			EventsCenter.Invoke(new GameEvents.Session.PointsChanged(_score));
+			_score.AddPoints(_tweaktable.PointsForMediumAsteroid);
 		}
 
 		void OnMissileVsSmallAsteroid(EntityReference missile, EntityReference asteroid)
@@ -244,8 +241,7 @@ namespace mygame
 
 			_soundsDatabase.PlayExplosionSmall();
 
-			_score += _tweaktable.PointsForSmallAsteroid;
-			EventsCenter.Invoke(new GameEvents.Session.PointsChanged(_score));
+			_score.AddPoints(_tweaktable.PointsForSmallAsteroid);
 		}
 
 		void OnBigAsteroid(EntityReference asteroid, EntityReference otherCollider)
