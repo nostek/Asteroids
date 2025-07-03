@@ -126,16 +126,21 @@ namespace mygame
 			//Run update for entities first
 			_entitiesManager.RunUpdate(_worldBoundsManager.Bounds);
 
-			if (Time.time > _nextSpawnTime && _player.IsValid())
-			{
-				_nextSpawnTime = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
+			UpdateNextSpawnTime();
+		}
 
-				_entitiesManager.Spawn(
-					GameEntities.AsteroidBig,
-					_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid, _player.GetPosition(), _halfSizePlayer * 2f), // *2f so we have a little more room to move
-					Random.insideUnitCircle.normalized * _tweaktable.RandomBigAsteroidSpeedBetween
-				);
-			}
+		void UpdateNextSpawnTime()
+		{
+			if (!(Time.time > _nextSpawnTime) || !_player.IsValid())
+				return;
+
+			_nextSpawnTime = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
+
+			_entitiesManager.Spawn(
+				GameEntities.AsteroidBig,
+				_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid, _player.GetPosition(), _halfSizePlayer * 2f), // *2f so we have a little more room to move
+				Random.insideUnitCircle.normalized * _tweaktable.RandomBigAsteroidSpeedBetween
+			);
 		}
 
 		#region PLAYER
