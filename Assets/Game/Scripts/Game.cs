@@ -62,7 +62,7 @@ namespace mygame
 		void Start()
 		{
 			_lives = _playerTweaktable.PlayerLives;
-			EventsCenter.Invoke(new GameEvents.Player.LivesChanged(_lives)); //So UI can update with the dynamic value
+			EventsCenter.Invoke(new GameEvents.Player.LivesChanged(_lives)); //So the UI can update with the dynamic value
 
 			//Assuming all transforms are uniformed scaled
 			_halfSizeBigAsteroid = _prefabAsteroidBig.transform.localScale.x * .5f;
@@ -79,16 +79,16 @@ namespace mygame
 			_entitiesManager.RegisterEntity(GameEntities.Player, _prefabPlayer, _halfSizePlayer, ensureCapacity: 1); //Only want one of these
 			_entitiesManager.RegisterEntity(GameEntities.PlayerSpawn, _prefabPlayerSpawn, halfSizePlayerSpawn, ensureCapacity: 1); //Only want one of these
 
-			//Missiles has a lifetime
+			//Missiles have a lifetime
 			_entitiesManager.RegisterEntityLifetime(GameEntities.Missile, _tweaktable.MissilesSecondsToLive);
 
 			//Asteroids VS Asteroids
-			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidBig, OnBigAsteroid); //Makes two medium
-			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidMedium, OnMediumAsteroid); //Makes two small
-			/*_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnDespawn);*/ //Do not collide small vs small
+			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidBig, OnBigAsteroid); //Makes two medium asteroids
+			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidMedium, OnMediumAsteroid); //Makes two small asteroids
+			/*_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnDespawn);*/ //Do not collide small VS small
 			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidMedium, OnMediumAsteroid, GameEntities.AsteroidBig, OnBigAsteroid); //Medium turns to small and Big turns to medium
-			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidMedium, OnMediumAsteroid); //Small moves in opposite direction and Medium turns to small
-			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidBig, OnBigAsteroid); //Small moves in opposite direction and Big turns to medium
+			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidMedium, OnMediumAsteroid); //Small moves in an opposite direction and Medium turns to small
+			_entitiesManager.RegisterCollisionSolver(GameEntities.AsteroidSmall, OnInvertDirection, GameEntities.AsteroidBig, OnBigAsteroid); //Small moves in an opposite direction and Big turns to medium
 
 			//Missiles VS Asteroids
 			_entitiesManager.RegisterCollisionSolver(GameEntities.Missile, OnMissileVsBigAsteroid, GameEntities.AsteroidBig, OnNoop);
@@ -107,7 +107,7 @@ namespace mygame
 			_entitiesManager.RegisterCollisionSolver(GameEntities.PlayerSpawn, OnPlayerSpawnHit, GameEntities.AsteroidSmall, OnNoop);
 			_entitiesManager.Spawn(GameEntities.PlayerSpawn, Vector2.zero, Vector2.zero);
 
-			//Spawn a initial amount of big asteroids on start
+			//Spawn an initial number of big asteroids on start
 			for (int i = 0; i < _tweaktable.AsteroidsInitialSpawnCount; i++)
 				_entitiesManager.Spawn(
 					GameEntities.AsteroidBig,
@@ -117,7 +117,7 @@ namespace mygame
 
 			_nextSpawnTime = _tweaktable.GetNextAsteroidSpawnDelayOverTime();
 
-			//Wait a second before we spawn the Player so the user has time to get ready
+			//Wait a second before we spawn the Player, so the user has time to get ready
 			TrySpawnPlayerAsync(1f).SafeExecute();
 		}
 
@@ -138,7 +138,7 @@ namespace mygame
 
 			_entitiesManager.Spawn(
 				GameEntities.AsteroidBig,
-				_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid, _player.GetPosition(), _halfSizePlayer * 2f), // *2f so we have a little more room to move
+				_worldBoundsManager.GetRandomInsideBounds(_halfSizeBigAsteroid, _player.GetPosition(), _halfSizePlayer * 2f), // *2f, so we have a little more room to move
 				Random.insideUnitCircle.normalized * _tweaktable.RandomBigAsteroidSpeedBetween
 			);
 		}
@@ -146,7 +146,7 @@ namespace mygame
 		#region PLAYER
 
 		//Uses Awaitable instead of Coroutines which does not create any garbage.
-		//In production I would probably use UniTask as it currently has a lot more support.
+		//In production, I would probably use UniTask as it currently has a lot more support.
 		async Awaitable TrySpawnPlayerAsync(float timeDelayUntilSpawn)
 		{
 			EventsCenter.Invoke(new GameEvents.Player.WaitingForSpawn(true));
@@ -158,7 +158,7 @@ namespace mygame
 					return;
 			}
 
-			//if anything is inside player spawn, we dont want to spawn
+			//if anything is inside player spawn, we don't want to spawn
 			while (Time.frameCount <= _invalidSpawnFrame)
 				await Awaitable.NextFrameAsync();
 
@@ -187,7 +187,7 @@ namespace mygame
 			_soundsDatabase.PlayExplosionBig();
 
 			_lives--;
-			EventsCenter.Invoke(new GameEvents.Player.LivesChanged(_lives)); //So UI can update with the amount of lives we have left
+			EventsCenter.Invoke(new GameEvents.Player.LivesChanged(_lives)); //So the UI can update with the number of lives we have left
 
 			if (_lives > 0)
 				TrySpawnPlayerAsync(1f).SafeExecute();
@@ -197,7 +197,7 @@ namespace mygame
 
 		void OnGameOver()
 		{
-			//would use something else when saving important data. But trivial things like this PlayerPrefs is fine (except for WebGL+itch.io)
+			//I would use something else when saving important data. But trivial data like this PlayerPrefs is fine (except for WebGL+itch.io)
 			PlayerPrefs.SetInt(GameConstants.PlayerPrefsLastScore, _score);
 
 			_windowsManager.OpenWindow(_windowsDatabase.WindowGameOver);
@@ -209,7 +209,7 @@ namespace mygame
 
 		void OnPlayerSpawnHit(EntityReference _, EntityReference __)
 		{
-			_invalidSpawnFrame = Time.frameCount + 1; //We have a Asteroid inside the spawn area this frame, invalidate this and next frame
+			_invalidSpawnFrame = Time.frameCount + 1; //We have an Asteroid inside the spawn area this frame, invalidate this and next frame
 		}
 
 		void OnMissileVsBigAsteroid(EntityReference missile, EntityReference asteroid)
