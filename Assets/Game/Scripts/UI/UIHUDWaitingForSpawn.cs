@@ -16,11 +16,11 @@ namespace mygame
 
 			canvas.enabled = false; //enable and disable canvas instead of gameobject so we dont clear the mesh buffers on the gpu
 
-			EventsCenter.Subscribe<GameEvents.WaitingForSpawnEvent>(OnWaitingForSpawn);
+			EventsCenter.Subscribe<GameEvents.Player.WaitingForSpawn>(OnWaitingForSpawn);
 		}
 
-		void OnDestroy() => EventsCenter.Unsubscribe<GameEvents.WaitingForSpawnEvent>(OnWaitingForSpawn);
+		void OnDestroy() => EventsCenter.Unsubscribe<GameEvents.Player.WaitingForSpawn>(OnWaitingForSpawn);
 
-		void OnWaitingForSpawn(GameEvents.WaitingForSpawnEvent ev) => canvas.enabled = ev.IsWaiting;
+		void OnWaitingForSpawn(GameEvents.Player.WaitingForSpawn ev) => canvas.enabled = ev.IsWaiting;
 	}
 }

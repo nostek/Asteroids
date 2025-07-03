@@ -37,10 +37,10 @@ namespace mygame
 			}
 		}
 
-		void OnEnable() => EventsCenter.Subscribe<GameEvents.WaitingForSpawnEvent>(OnWaitingForSpawn);
-		void OnDisable() => EventsCenter.Unsubscribe<GameEvents.WaitingForSpawnEvent>(OnWaitingForSpawn);
+		void OnEnable() => EventsCenter.Subscribe<GameEvents.Player.WaitingForSpawn>(OnWaitingForSpawn);
+		void OnDisable() => EventsCenter.Unsubscribe<GameEvents.Player.WaitingForSpawn>(OnWaitingForSpawn);
 
-		void OnWaitingForSpawn(GameEvents.WaitingForSpawnEvent ev)
+		void OnWaitingForSpawn(GameEvents.Player.WaitingForSpawn ev)
 		{
 			if (_instance == null)
 				return;

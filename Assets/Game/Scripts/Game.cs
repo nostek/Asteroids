@@ -62,7 +62,7 @@ namespace mygame
 		void Start()
 		{
 			_lives = _playerTweaktable.PlayerLives;
-			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the dynamic value
+			EventsCenter.Invoke(new GameEvents.Player.LivesChanged(_lives)); //So UI can update with the dynamic value
 
 			//Assuming all transforms are uniformed scaled
 			_halfSizeBigAsteroid = _prefabAsteroidBig.transform.localScale.x * .5f;
@@ -144,7 +144,7 @@ namespace mygame
 		//In production I would probably use UniTask as it currently has a lot more support.
 		async Awaitable TrySpawnPlayerAsync(float timeDelayUntilSpawn)
 		{
-			EventsCenter.Invoke(new GameEvents.WaitingForSpawnEvent(true));
+			EventsCenter.Invoke(new GameEvents.Player.WaitingForSpawn(true));
 
 			if (timeDelayUntilSpawn > 0f)
 			{
@@ -160,7 +160,7 @@ namespace mygame
 			if (this == null)
 				return;
 
-			EventsCenter.Invoke(new GameEvents.WaitingForSpawnEvent(false));
+			EventsCenter.Invoke(new GameEvents.Player.WaitingForSpawn(false));
 
 			SpawnPlayer();
 		}
@@ -182,7 +182,7 @@ namespace mygame
 			_soundsDatabase.PlayExplosionBig();
 
 			_lives--;
-			EventsCenter.Invoke(new GameEvents.LivesChangedEvent(_lives)); //So UI can update with the amount of lives we have left
+			EventsCenter.Invoke(new GameEvents.Player.LivesChanged(_lives)); //So UI can update with the amount of lives we have left
 
 			if (_lives > 0)
 				TrySpawnPlayerAsync(1f).SafeExecute();
@@ -216,7 +216,7 @@ namespace mygame
 			SplitAsteroid(asteroid, missile, GameEntities.AsteroidMedium, _halfSizeMediumAsteroid, _tweaktable.RandomMediumAsteroidSpeedBetween);
 
 			_score += _tweaktable.PointsForBigAsteroid;
-			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForBigAsteroid, _score));
+			EventsCenter.Invoke(new GameEvents.Session.AddPoints(_tweaktable.PointsForBigAsteroid, _score));
 		}
 
 		void OnMissileVsMediumAsteroid(EntityReference missile, EntityReference asteroid)
@@ -228,7 +228,7 @@ namespace mygame
 			SplitAsteroid(asteroid, missile, GameEntities.AsteroidSmall, _halfSizeSmallAsteroid, _tweaktable.RandomSmallAsteroidSpeedBetween);
 
 			_score += _tweaktable.PointsForMediumAsteroid;
-			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForMediumAsteroid, _score));
+			EventsCenter.Invoke(new GameEvents.Session.AddPoints(_tweaktable.PointsForMediumAsteroid, _score));
 		}
 
 		void OnMissileVsSmallAsteroid(EntityReference missile, EntityReference asteroid)
@@ -239,7 +239,7 @@ namespace mygame
 			_soundsDatabase.PlayExplosionSmall();
 
 			_score += _tweaktable.PointsForSmallAsteroid;
-			EventsCenter.Invoke(new GameEvents.AddPointsEvent(_tweaktable.PointsForSmallAsteroid, _score));
+			EventsCenter.Invoke(new GameEvents.Session.AddPoints(_tweaktable.PointsForSmallAsteroid, _score));
 		}
 
 		void OnBigAsteroid(EntityReference asteroid, EntityReference otherCollider)

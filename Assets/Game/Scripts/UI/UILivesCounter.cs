@@ -5,10 +5,10 @@ namespace mygame
 {
 	public class UILivesCounter : MonoBehaviour
 	{
-		void Awake() => EventsCenter.Subscribe<GameEvents.LivesChangedEvent>(OnLivesChanged);
-		void OnDestroy() => EventsCenter.Unsubscribe<GameEvents.LivesChangedEvent>(OnLivesChanged);
+		void Awake() => EventsCenter.Subscribe<GameEvents.Player.LivesChanged>(OnLivesChanged);
+		void OnDestroy() => EventsCenter.Unsubscribe<GameEvents.Player.LivesChanged>(OnLivesChanged);
 
-		void OnLivesChanged(GameEvents.LivesChangedEvent ev)
+		void OnLivesChanged(GameEvents.Player.LivesChanged ev)
 		{
 			//add more ui elements if needed
 			while (transform.childCount < ev.Lives)
