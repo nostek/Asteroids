@@ -5,14 +5,14 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "546c64ff9d91289cb6565b6814769c3f29441608"
+      "hash": "0fde0e0dbaf740f539a3cedc2c7688d8c71a5754"
     },
     "com.github.nostek.unityservicelocator": {
       "version": "https://github.com/nostek/UnityServiceLocator.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "5bcfdc704e3246da9eb703544676659f5377640f"
+      "hash": "210996dcb100f1465c3ee35b4d2c691ef054bf88"
     },
     "com.unity.2d.animation": {
       "version": "11.0.0",
